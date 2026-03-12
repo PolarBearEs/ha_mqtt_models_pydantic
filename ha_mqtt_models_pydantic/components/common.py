@@ -58,12 +58,18 @@ from ..const import (
     DEFAULT_PAYLOAD_NOT_AVAILABLE,
     DEFAULT_QOS,
 )
+from ._coercion import coerce_string_like_fields
 
 PreservedUrl = Annotated[AnyUrl, UrlConstraints(preserve_empty_path=True)]
 
 
 class MqttModel(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    @model_validator(mode="before")
+    @classmethod
+    def coerce_string_fields(cls, data: Any) -> Any:
+        return coerce_string_like_fields(cls.model_fields, data)
 
 
 class AvailabilityMode(StrEnum):
