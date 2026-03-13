@@ -1,110 +1,166 @@
-# Home Assistant MQTT Pydantic Models
+# ha-mqtt-models-pydantic
 
-Pydantic models for Home Assistant MQTT discovery payloads. This project provides a set of robust, type-safe models to validate and work with MQTT discovery data in Home Assistant.
+Typed Pydantic v2 models for Home Assistant MQTT discovery payloads.
 
-## Features
+This library validates Home Assistant MQTT discovery payloads as plain Python data, without depending on Home Assistant itself. It is useful when you want to inspect, validate, transform, or generate discovery payloads before publishing them to MQTT.
 
-- **Pydantic V2**: Leveraging the latest Pydantic features for high-performance validation.
-- **Type Safety**: Full type hinting for MQTT discovery payloads.
-- **Centralized Constants**: All MQTT configuration keys and default values are centralized in `ha_mqtt_models_pydantic/const.py`, mirroring Home Assistant core conventions.
-- **Abbreviation Expansion**: Helper tools to expand abbreviated MQTT discovery keys.
-- **Comprehensive Coverage**: Supporting a wide range of Home Assistant entities (Sensor, Climate, Light, Lock, Vacuum, etc.).
+## What It Includes
+
+- Pydantic models for Home Assistant MQTT discovery components
+- Helpers to parse raw discovery payloads into the right model
+- Support for Home Assistant discovery abbreviations such as `stat_t`, `cmd_t`, and `dev`
+- Dedicated light parsing for `basic`, `json`, and `template` schemas
+- Typed shared models for entity metadata, device info, and origin info
 
 ## Installation
 
+From PyPI:
+
 ```bash
-uv pip install .
+pip install ha-mqtt-models-pydantic
 ```
 
-## Usage
+With `uv`:
 
-### Validating a Discovery Payload
+```bash
+uv add ha-mqtt-models-pydantic
+```
+
+## Quick Start
 
 ```python
-from ha_mqtt_models_pydantic.discovery import parse_component_payload
+from ha_mqtt_models_pydantic import parse_component_payload
 
-# Example MQTT discovery payload (abbreviated)
 payload = {
     "dev_cla": "temperature",
-    "name": "Temperature",
-    "stat_t": "homeassistant/sensor/temp/state",
+    "name": "Living Room Temperature",
+    "stat_t": "homeassistant/sensor/living_room_temperature/state",
     "unit_of_meas": "°C",
     "val_tpl": "{{ value_json.temperature }}",
-    "def_ent_id": "sensor.temperature",
+    "def_ent_id": "sensor.living_room_temperature",
     "dev": {
-        "ids": ["temp_sensor_01"],
-        "name": "Living Room Sensor"
-    }
+        "ids": ["living_room_sensor_01"],
+        "name": "Living Room Sensor",
+    },
 }
 
-# Expand abbreviations and validate with the correct component model
 sensor = parse_component_payload("sensor", payload)
 
 print(sensor.name)
-# Output: Temperature
+print(sensor.state_topic)
+print(sensor.device.identifiers)
 ```
 
-### Using Constants
+`parse_component_payload()` expands Home Assistant abbreviations before validation, so both abbreviated and expanded payloads are accepted.
+
+## Main APIs
+
+### Parse a component payload
 
 ```python
-from ha_mqtt_models_pydantic.const import CONF_STATE_TOPIC, DEFAULT_PAYLOAD_AVAILABLE
+from ha_mqtt_models_pydantic import parse_component_payload
 
-print(f"Discovery key for state topic: {CONF_STATE_TOPIC}")
-print(f"Default online payload: {DEFAULT_PAYLOAD_AVAILABLE}")
+switch = parse_component_payload(
+    "switch",
+    {
+        "cmd_t": "devices/lamp/set",
+        "stat_t": "devices/lamp/state",
+        "pl_on": "ON",
+        "pl_off": "OFF",
+        "uniq_id": "lamp_switch_01",
+    },
+)
+```
+
+### Parse a light payload
+
+```python
+from ha_mqtt_models_pydantic import parse_light_payload
+
+light = parse_light_payload(
+    {
+        "schema": "json",
+        "cmd_t": "devices/light/set",
+        "stat_t": "devices/light/state",
+        "name": "Desk Light",
+    }
+)
+```
+
+### Parse a device discovery payload
+
+```python
+from ha_mqtt_models_pydantic import parse_device_discovery_payload
+
+device_payload = parse_device_discovery_payload(
+    {
+        "dev": {"ids": ["device_01"], "name": "Example Device"},
+        "o": {"name": "example-generator"},
+        "cmps": {
+            "temperature": {
+                "p": "sensor",
+                "dev_cla": "temperature",
+                "stat_t": "devices/example/temperature",
+                "unit_of_meas": "°C",
+            }
+        },
+    }
+)
 ```
 
 ## Supported Components
 
-- Alarm Control Panel
-- Binary Sensor
-- Button
-- Camera
-- Climate
-- Cover
-- Device Tracker
-- Event
-- Fan
-- Humidifier
-- Image
-- Lawn Mower
-- Light
-- Lock
-- Notify
-- Number
-- Scene
-- Select
-- Sensor
-- Siren
-- Switch
-- Tag
-- Text
-- Update
-- Vacuum
-- Valve
-- Water Heater
+- `alarm_control_panel`
+- `binary_sensor`
+- `button`
+- `camera`
+- `climate`
+- `cover`
+- `device_automation`
+- `device_tracker`
+- `event`
+- `fan`
+- `humidifier`
+- `image`
+- `lawn_mower`
+- `light`
+- `lock`
+- `notify`
+- `number`
+- `scene`
+- `select`
+- `sensor`
+- `siren`
+- `switch`
+- `tag`
+- `text`
+- `update`
+- `vacuum`
+- `valve`
+- `water_heater`
+
+## Notes
+
+- The import package is `ha_mqtt_models_pydantic`.
+- The PyPI distribution name is `ha-mqtt-models-pydantic`.
+- The library targets Python `3.11+`.
+- The package is marked as typed with `py.typed`.
 
 ## Development
 
-### Prerequisites
-
-- Python 3.11+
-- [uv](https://github.com/astral-sh/uv)
-
-### Running Verification
-
-You can verify the models against the vendored Home Assistant snapshot with:
+Install development dependencies:
 
 ```bash
-./.venv/bin/python -m pytest
+uv sync --dev
 ```
 
-### Code Quality
-
-The project uses `ruff` for linting and formatting. Line length is configured to 120 characters.
+Run checks:
 
 ```bash
-ruff check .
-ruff format .
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy .
+uv run pytest -q
 ```
 
 ## License
