@@ -80,21 +80,17 @@ class AvailabilityMode(StrEnum):
 
 class AvailabilityConfig(MqttModel):
     topic: Annotated[str, Field(alias=CONF_TOPIC, min_length=1)]
-    payload_available: Annotated[str | None, Field(alias=CONF_PAYLOAD_AVAILABLE)] = DEFAULT_PAYLOAD_AVAILABLE
-    payload_not_available: Annotated[str | None, Field(alias=CONF_PAYLOAD_NOT_AVAILABLE)] = (
-        DEFAULT_PAYLOAD_NOT_AVAILABLE
-    )
+    payload_available: Annotated[str, Field(alias=CONF_PAYLOAD_AVAILABLE)] = DEFAULT_PAYLOAD_AVAILABLE
+    payload_not_available: Annotated[str, Field(alias=CONF_PAYLOAD_NOT_AVAILABLE)] = DEFAULT_PAYLOAD_NOT_AVAILABLE
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None
 
 
 class AvailabilityBase(MqttModel):
-    availability_mode: Annotated[AvailabilityMode | None, Field(alias=CONF_AVAILABILITY_MODE)] = AvailabilityMode.LATEST
+    availability_mode: Annotated[AvailabilityMode, Field(alias=CONF_AVAILABILITY_MODE)] = AvailabilityMode.LATEST
     availability_topic: Annotated[str | None, Field(alias=CONF_AVAILABILITY_TOPIC, min_length=1)] = None
     availability_template: Annotated[str | None, Field(alias=CONF_AVAILABILITY_TEMPLATE)] = None
-    payload_available: Annotated[str | None, Field(alias=CONF_PAYLOAD_AVAILABLE)] = DEFAULT_PAYLOAD_AVAILABLE
-    payload_not_available: Annotated[str | None, Field(alias=CONF_PAYLOAD_NOT_AVAILABLE)] = (
-        DEFAULT_PAYLOAD_NOT_AVAILABLE
-    )
+    payload_available: Annotated[str, Field(alias=CONF_PAYLOAD_AVAILABLE)] = DEFAULT_PAYLOAD_AVAILABLE
+    payload_not_available: Annotated[str, Field(alias=CONF_PAYLOAD_NOT_AVAILABLE)] = DEFAULT_PAYLOAD_NOT_AVAILABLE
     availability: Annotated[list[AvailabilityConfig] | None, Field(alias=CONF_AVAILABILITY)] = None
 
     @field_validator("availability", mode="before")
@@ -183,8 +179,8 @@ class EntityCategory(StrEnum):
 
 
 class MqttBase(MqttModel):
-    qos: Annotated[int | None, Field(alias=CONF_QOS, ge=0, le=2)] = DEFAULT_QOS
-    encoding: Annotated[str | None, Field(alias=CONF_ENCODING)] = DEFAULT_ENCODING
+    qos: Annotated[int, Field(alias=CONF_QOS, ge=0, le=2)] = DEFAULT_QOS
+    encoding: Annotated[str, Field(alias=CONF_ENCODING)] = DEFAULT_ENCODING
     group: Annotated[list[str] | None, Field(alias=CONF_GROUP)] = None
 
 
@@ -195,8 +191,8 @@ class MqttReadOnly(MqttBase):
 
 class MqttReadWrite(MqttBase):
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None
-    optimistic: Annotated[bool | None, Field(alias="optimistic")] = False
-    retain: Annotated[bool | None, Field(alias="retain")] = False
+    optimistic: Annotated[bool, Field(alias="optimistic")] = False
+    retain: Annotated[bool, Field(alias="retain")] = False
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None
 
 
@@ -204,7 +200,7 @@ class MqttEntityCommon(AvailabilityBase):
     device: Annotated[DeviceInfo | None, Field(alias=CONF_DEVICE)] = None
     entity_picture: Annotated[PreservedUrl | None, Field(alias=CONF_ENTITY_PICTURE)] = None
     origin: Annotated[OriginInfo | None, Field(alias=CONF_ORIGIN)] = None
-    enabled_by_default: Annotated[bool | None, Field(alias=CONF_ENABLED_BY_DEFAULT)] = True
+    enabled_by_default: Annotated[bool, Field(alias=CONF_ENABLED_BY_DEFAULT)] = True
     entity_category: Annotated[EntityCategory | None, Field(alias=CONF_ENTITY_CATEGORY)] = None
     icon: Annotated[str | None, Field(alias=CONF_ICON)] = None
     json_attributes_topic: Annotated[str | None, Field(alias=CONF_JSON_ATTRS_TOPIC, min_length=1)] = None

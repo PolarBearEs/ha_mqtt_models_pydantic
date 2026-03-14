@@ -39,20 +39,18 @@ class AlarmControlPanel(MqttEntityCommon, MqttReadWrite):
     command_topic: Annotated[str, Field(alias=CONF_COMMAND_TOPIC, min_length=1)]
     state_topic: Annotated[str, Field(alias=CONF_STATE_TOPIC, min_length=1)]
     code: Annotated[str | None, Field(alias=CONF_CODE)] = None
-    code_arm_required: Annotated[bool | None, Field(alias=CONF_CODE_ARM_REQUIRED)] = True
-    code_disarm_required: Annotated[bool | None, Field(alias=CONF_CODE_DISARM_REQUIRED)] = True
-    code_trigger_required: Annotated[bool | None, Field(alias=CONF_CODE_TRIGGER_REQUIRED)] = True
-    command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = (
-        DEFAULT_ALARM_CONTROL_PANEL_COMMAND_TEMPLATE
-    )
-    payload_arm_away: Annotated[str | None, Field(alias=CONF_PAYLOAD_ARM_AWAY)] = DEFAULT_PAYLOAD_ARM_AWAY
-    payload_arm_home: Annotated[str | None, Field(alias=CONF_PAYLOAD_ARM_HOME)] = DEFAULT_PAYLOAD_ARM_HOME
-    payload_arm_night: Annotated[str | None, Field(alias=CONF_PAYLOAD_ARM_NIGHT)] = DEFAULT_PAYLOAD_ARM_NIGHT
-    payload_arm_vacation: Annotated[str | None, Field(alias=CONF_PAYLOAD_ARM_VACATION)] = DEFAULT_PAYLOAD_ARM_VACATION
-    payload_arm_custom_bypass: Annotated[str | None, Field(alias=CONF_PAYLOAD_ARM_CUSTOM_BYPASS)] = (
+    code_arm_required: Annotated[bool, Field(alias=CONF_CODE_ARM_REQUIRED)] = True
+    code_disarm_required: Annotated[bool, Field(alias=CONF_CODE_DISARM_REQUIRED)] = True
+    code_trigger_required: Annotated[bool, Field(alias=CONF_CODE_TRIGGER_REQUIRED)] = True
+    command_template: Annotated[str, Field(alias=CONF_COMMAND_TEMPLATE)] = DEFAULT_ALARM_CONTROL_PANEL_COMMAND_TEMPLATE
+    payload_arm_away: Annotated[str, Field(alias=CONF_PAYLOAD_ARM_AWAY)] = DEFAULT_PAYLOAD_ARM_AWAY
+    payload_arm_home: Annotated[str, Field(alias=CONF_PAYLOAD_ARM_HOME)] = DEFAULT_PAYLOAD_ARM_HOME
+    payload_arm_night: Annotated[str, Field(alias=CONF_PAYLOAD_ARM_NIGHT)] = DEFAULT_PAYLOAD_ARM_NIGHT
+    payload_arm_vacation: Annotated[str, Field(alias=CONF_PAYLOAD_ARM_VACATION)] = DEFAULT_PAYLOAD_ARM_VACATION
+    payload_arm_custom_bypass: Annotated[str, Field(alias=CONF_PAYLOAD_ARM_CUSTOM_BYPASS)] = (
         DEFAULT_PAYLOAD_ARM_CUSTOM_BYPASS
     )
-    payload_disarm: Annotated[str | None, Field(alias=CONF_PAYLOAD_DISARM)] = DEFAULT_PAYLOAD_DISARM
-    payload_trigger: Annotated[str | None, Field(alias=CONF_PAYLOAD_TRIGGER)] = DEFAULT_PAYLOAD_TRIGGER
+    payload_disarm: Annotated[str, Field(alias=CONF_PAYLOAD_DISARM)] = DEFAULT_PAYLOAD_DISARM
+    payload_trigger: Annotated[str, Field(alias=CONF_PAYLOAD_TRIGGER)] = DEFAULT_PAYLOAD_TRIGGER
     supported_features: Annotated[list[str] | None, Field(alias=CONF_SUPPORTED_FEATURES)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None

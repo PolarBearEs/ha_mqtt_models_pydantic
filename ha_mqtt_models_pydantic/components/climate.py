@@ -102,8 +102,8 @@ class Climate(MqttEntityCommon, MqttReadWrite):
     target_humidity_command_topic: Annotated[
         str | None, Field(alias=CONF_TARGET_HUMIDITY_COMMAND_TOPIC, min_length=1)
     ] = None
-    max_humidity: Annotated[float | None, Field(alias=CONF_HUMIDITY_MAX, gt=0)] = DEFAULT_MAX_HUMIDITY
-    min_humidity: Annotated[float | None, Field(alias=CONF_HUMIDITY_MIN, gt=0)] = DEFAULT_MIN_HUMIDITY
+    max_humidity: Annotated[float, Field(alias=CONF_HUMIDITY_MAX, gt=0)] = DEFAULT_MAX_HUMIDITY
+    min_humidity: Annotated[float, Field(alias=CONF_HUMIDITY_MIN, gt=0)] = DEFAULT_MIN_HUMIDITY
     target_humidity_state_template: Annotated[str | None, Field(alias=CONF_TARGET_HUMIDITY_STATE_TEMPLATE)] = None
     target_humidity_state_topic: Annotated[str | None, Field(alias=CONF_TARGET_HUMIDITY_STATE_TOPIC, min_length=1)] = (
         None
@@ -120,8 +120,8 @@ class Climate(MqttEntityCommon, MqttReadWrite):
     ]
     mode_state_template: Annotated[str | None, Field(alias=CONF_MODE_STATE_TEMPLATE)] = None
     mode_state_topic: Annotated[str | None, Field(alias=CONF_MODE_STATE_TOPIC, min_length=1)] = None
-    payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
-    payload_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
+    payload_on: Annotated[str, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
+    payload_off: Annotated[str, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
     power_command_topic: Annotated[str | None, Field(alias=CONF_POWER_COMMAND_TOPIC, min_length=1)] = None
     power_command_template: Annotated[str | None, Field(alias=CONF_POWER_COMMAND_TEMPLATE)] = None
     precision: Annotated[float | None, Field(alias=CONF_PRECISION)] = None
@@ -151,10 +151,10 @@ class Climate(MqttEntityCommon, MqttReadWrite):
     swing_modes: Annotated[list[str] | None, Field(alias=CONF_SWING_MODE_LIST)] = [SwingMode.ON, SwingMode.OFF]
     swing_mode_state_template: Annotated[str | None, Field(alias=CONF_SWING_MODE_STATE_TEMPLATE)] = None
     swing_mode_state_topic: Annotated[str | None, Field(alias=CONF_SWING_MODE_STATE_TOPIC, min_length=1)] = None
-    initial: Annotated[float | None, Field(alias=CONF_TEMP_INITIAL)] = DEFAULT_CLIMATE_INITIAL_TEMPERATURE
-    min_temp: Annotated[float | None, Field(alias=CONF_TEMP_MIN)] = DEFAULT_MIN_TEMP
-    max_temp: Annotated[float | None, Field(alias=CONF_TEMP_MAX)] = DEFAULT_MAX_TEMP
-    temp_step: Annotated[float | None, Field(alias=CONF_TEMP_STEP)] = 1.0
+    initial: Annotated[float, Field(alias=CONF_TEMP_INITIAL)] = DEFAULT_CLIMATE_INITIAL_TEMPERATURE
+    min_temp: Annotated[float, Field(alias=CONF_TEMP_MIN)] = DEFAULT_MIN_TEMP
+    max_temp: Annotated[float, Field(alias=CONF_TEMP_MAX)] = DEFAULT_MAX_TEMP
+    temp_step: Annotated[float, Field(alias=CONF_TEMP_STEP)] = 1.0
     temperature_command_template: Annotated[str | None, Field(alias=CONF_TEMP_COMMAND_TEMPLATE)] = None
     temperature_command_topic: Annotated[str | None, Field(alias=CONF_TEMP_COMMAND_TOPIC, min_length=1)] = None
     temperature_high_command_template: Annotated[str | None, Field(alias=CONF_TEMP_HIGH_COMMAND_TEMPLATE)] = None

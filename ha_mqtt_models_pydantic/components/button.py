@@ -24,5 +24,5 @@ class Button(MqttEntityCommon, MqttBase):
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     command_topic: Annotated[str, Field(alias=CONF_COMMAND_TOPIC)]
     device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
-    payload_press: Annotated[str | None, Field(alias=CONF_PAYLOAD_PRESS)] = DEFAULT_PAYLOAD_PRESS
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    payload_press: Annotated[str, Field(alias=CONF_PAYLOAD_PRESS)] = DEFAULT_PAYLOAD_PRESS
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN

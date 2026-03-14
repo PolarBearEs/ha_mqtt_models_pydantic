@@ -25,8 +25,8 @@ class Switch(MqttEntityCommon, MqttReadWrite):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
-    payload_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
-    payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
+    payload_off: Annotated[str, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
+    payload_on: Annotated[str, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
     state_off: Annotated[str | None, Field(alias=CONF_STATE_OFF)] = None
     state_on: Annotated[str | None, Field(alias=CONF_STATE_ON)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None

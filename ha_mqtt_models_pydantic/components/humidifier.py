@@ -50,15 +50,15 @@ class Humidifier(MqttEntityCommon, MqttReadWrite):
     mode_state_template: Annotated[str | None, Field(alias=CONF_MODE_STATE_TEMPLATE)] = None
     mode_state_topic: Annotated[str | None, Field(alias=CONF_MODE_STATE_TOPIC, min_length=1)] = None
     modes: Annotated[list[str] | None, Field(alias=CONF_MODE_LIST)] = []
-    payload_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
-    payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
-    payload_reset_humidity: Annotated[str | None, Field(alias=CONF_PAYLOAD_RESET_HUMIDITY)] = DEFAULT_PAYLOAD_RESET
-    payload_reset_mode: Annotated[str | None, Field(alias=CONF_PAYLOAD_RESET_MODE)] = DEFAULT_PAYLOAD_RESET
+    payload_off: Annotated[str, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
+    payload_on: Annotated[str, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
+    payload_reset_humidity: Annotated[str, Field(alias=CONF_PAYLOAD_RESET_HUMIDITY)] = DEFAULT_PAYLOAD_RESET
+    payload_reset_mode: Annotated[str, Field(alias=CONF_PAYLOAD_RESET_MODE)] = DEFAULT_PAYLOAD_RESET
     state_value_template: Annotated[str | None, Field(alias=CONF_STATE_VALUE_TEMPLATE)] = None
     target_humidity_command_template: Annotated[str | None, Field(alias=CONF_TARGET_HUMIDITY_COMMAND_TEMPLATE)] = None
     target_humidity_command_topic: Annotated[str, Field(alias=CONF_TARGET_HUMIDITY_COMMAND_TOPIC, min_length=1)]
-    max_humidity: Annotated[float | None, Field(alias=CONF_TARGET_HUMIDITY_MAX, gt=0)] = DEFAULT_MAX_HUMIDITY
-    min_humidity: Annotated[float | None, Field(alias=CONF_TARGET_HUMIDITY_MIN, gt=0)] = DEFAULT_MIN_HUMIDITY
+    max_humidity: Annotated[float, Field(alias=CONF_TARGET_HUMIDITY_MAX, gt=0)] = DEFAULT_MAX_HUMIDITY
+    min_humidity: Annotated[float, Field(alias=CONF_TARGET_HUMIDITY_MIN, gt=0)] = DEFAULT_MIN_HUMIDITY
     target_humidity_state_template: Annotated[str | None, Field(alias=CONF_TARGET_HUMIDITY_STATE_TEMPLATE)] = None
     target_humidity_state_topic: Annotated[str | None, Field(alias=CONF_TARGET_HUMIDITY_STATE_TOPIC, min_length=1)] = (
         None

@@ -23,10 +23,10 @@ class DeviceTracker(MqttEntityCommon, MqttBase):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None
-    payload_home: Annotated[str | None, Field(alias=CONF_PAYLOAD_HOME)] = DEFAULT_PAYLOAD_HOME
-    payload_not_home: Annotated[str | None, Field(alias=CONF_PAYLOAD_NOT_HOME)] = DEFAULT_PAYLOAD_NOT_HOME
-    payload_reset: Annotated[str | None, Field(alias=CONF_PAYLOAD_RESET)] = DEFAULT_PAYLOAD_RESET
-    source_type: Annotated[str | None, Field(alias=CONF_SOURCE_TYPE)] = "gps"
+    payload_home: Annotated[str, Field(alias=CONF_PAYLOAD_HOME)] = DEFAULT_PAYLOAD_HOME
+    payload_not_home: Annotated[str, Field(alias=CONF_PAYLOAD_NOT_HOME)] = DEFAULT_PAYLOAD_NOT_HOME
+    payload_reset: Annotated[str, Field(alias=CONF_PAYLOAD_RESET)] = DEFAULT_PAYLOAD_RESET
+    source_type: Annotated[str, Field(alias=CONF_SOURCE_TYPE)] = "gps"
 
     @model_validator(mode="after")
     def validate_topics(self) -> DeviceTracker:

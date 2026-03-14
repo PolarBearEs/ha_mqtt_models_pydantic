@@ -28,9 +28,9 @@ class LawnMower(MqttEntityCommon, MqttBase):
     activity_value_template: Annotated[str | None, Field(alias=CONF_ACTIVITY_VALUE_TEMPLATE)] = None
     dock_command_template: Annotated[str | None, Field(alias=CONF_DOCK_COMMAND_TEMPLATE)] = None
     dock_command_topic: Annotated[str | None, Field(alias=CONF_DOCK_COMMAND_TOPIC, min_length=1)] = None
-    optimistic: Annotated[bool | None, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
+    optimistic: Annotated[bool, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
     pause_command_template: Annotated[str | None, Field(alias=CONF_PAUSE_COMMAND_TEMPLATE)] = None
     pause_command_topic: Annotated[str | None, Field(alias=CONF_PAUSE_COMMAND_TOPIC, min_length=1)] = None
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
     start_mowing_command_template: Annotated[str | None, Field(alias=CONF_START_MOWING_COMMAND_TEMPLATE)] = None
     start_mowing_command_topic: Annotated[str | None, Field(alias=CONF_START_MOWING_COMMAND_TOPIC, min_length=1)] = None

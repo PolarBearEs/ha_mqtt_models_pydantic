@@ -64,20 +64,14 @@ class Fan(MqttEntityCommon, MqttReadWrite):
     preset_mode_command_template: Annotated[str | None, Field(alias=CONF_PRESET_MODE_COMMAND_TEMPLATE)] = None
     preset_mode_state_topic: Annotated[str | None, Field(alias=CONF_PRESET_MODE_STATE_TOPIC, min_length=1)] = None
     preset_mode_value_template: Annotated[str | None, Field(alias=CONF_PRESET_MODE_VALUE_TEMPLATE)] = None
-    speed_range_min: Annotated[int | None, Field(alias=CONF_SPEED_RANGE_MIN, gt=0)] = DEFAULT_SPEED_RANGE_MIN
-    speed_range_max: Annotated[int | None, Field(alias=CONF_SPEED_RANGE_MAX, gt=0)] = DEFAULT_SPEED_RANGE_MAX
-    payload_reset_percentage: Annotated[str | None, Field(alias=CONF_PAYLOAD_RESET_PERCENTAGE)] = DEFAULT_PAYLOAD_RESET
-    payload_reset_preset_mode: Annotated[str | None, Field(alias=CONF_PAYLOAD_RESET_PRESET_MODE)] = (
-        DEFAULT_PAYLOAD_RESET
-    )
-    payload_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
-    payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
-    payload_oscillation_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OSCILLATION_OFF)] = (
-        DEFAULT_PAYLOAD_OSCILLATE_OFF
-    )
-    payload_oscillation_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_OSCILLATION_ON)] = (
-        DEFAULT_PAYLOAD_OSCILLATE_ON
-    )
+    speed_range_min: Annotated[int, Field(alias=CONF_SPEED_RANGE_MIN, gt=0)] = DEFAULT_SPEED_RANGE_MIN
+    speed_range_max: Annotated[int, Field(alias=CONF_SPEED_RANGE_MAX, gt=0)] = DEFAULT_SPEED_RANGE_MAX
+    payload_reset_percentage: Annotated[str, Field(alias=CONF_PAYLOAD_RESET_PERCENTAGE)] = DEFAULT_PAYLOAD_RESET
+    payload_reset_preset_mode: Annotated[str, Field(alias=CONF_PAYLOAD_RESET_PRESET_MODE)] = DEFAULT_PAYLOAD_RESET
+    payload_off: Annotated[str, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
+    payload_on: Annotated[str, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
+    payload_oscillation_off: Annotated[str, Field(alias=CONF_PAYLOAD_OSCILLATION_OFF)] = DEFAULT_PAYLOAD_OSCILLATE_OFF
+    payload_oscillation_on: Annotated[str, Field(alias=CONF_PAYLOAD_OSCILLATION_ON)] = DEFAULT_PAYLOAD_OSCILLATE_ON
     state_value_template: Annotated[str | None, Field(alias=CONF_STATE_VALUE_TEMPLATE)] = None
 
     @model_validator(mode="after")

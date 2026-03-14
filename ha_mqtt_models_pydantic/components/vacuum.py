@@ -29,15 +29,15 @@ class Vacuum(MqttEntityCommon, MqttBase):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None
     fan_speed_list: Annotated[list[str] | None, Field(alias=CONF_FAN_SPEED_LIST)] = []
-    payload_clean_spot: Annotated[str | None, Field(alias=CONF_PAYLOAD_CLEAN_SPOT)] = "clean_spot"
-    payload_locate: Annotated[str | None, Field(alias=CONF_PAYLOAD_LOCATE)] = "locate"
-    payload_pause: Annotated[str | None, Field(alias=CONF_PAYLOAD_PAUSE)] = "pause"
-    payload_return_to_base: Annotated[str | None, Field(alias=CONF_PAYLOAD_RETURN_TO_BASE)] = "return_to_base"
-    payload_start: Annotated[str | None, Field(alias=CONF_PAYLOAD_START)] = "start"
-    payload_stop: Annotated[str | None, Field(alias=CONF_PAYLOAD_STOP)] = "stop"
+    payload_clean_spot: Annotated[str, Field(alias=CONF_PAYLOAD_CLEAN_SPOT)] = "clean_spot"
+    payload_locate: Annotated[str, Field(alias=CONF_PAYLOAD_LOCATE)] = "locate"
+    payload_pause: Annotated[str, Field(alias=CONF_PAYLOAD_PAUSE)] = "pause"
+    payload_return_to_base: Annotated[str, Field(alias=CONF_PAYLOAD_RETURN_TO_BASE)] = "return_to_base"
+    payload_start: Annotated[str, Field(alias=CONF_PAYLOAD_START)] = "start"
+    payload_stop: Annotated[str, Field(alias=CONF_PAYLOAD_STOP)] = "stop"
     payload_turn_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_TURN_OFF)] = None
     payload_turn_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_TURN_ON)] = None
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = False
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = False
     send_command_topic: Annotated[str | None, Field(alias=CONF_SEND_COMMAND_TOPIC, min_length=1)] = None
     set_fan_speed_topic: Annotated[str | None, Field(alias=CONF_SET_FAN_SPEED_TOPIC, min_length=1)] = None
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None

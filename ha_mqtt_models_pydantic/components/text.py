@@ -13,6 +13,6 @@ class Text(MqttEntityCommon, MqttReadWrite):
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     max: Annotated[int | None, Field(alias=CONF_MAX)] = None
     min: Annotated[int | None, Field(alias=CONF_MIN)] = None
-    mode: Annotated[str | None, Field(alias=CONF_MODE)] = "text"
+    mode: Annotated[str, Field(alias=CONF_MODE)] = "text"
     pattern: Annotated[str | None, Field(alias=CONF_PATTERN)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None
