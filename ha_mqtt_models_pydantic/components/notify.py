@@ -12,4 +12,4 @@ class Notify(MqttEntityCommon, MqttBase):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     command_topic: Annotated[str, Field(alias=CONF_COMMAND_TOPIC, min_length=1)]
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN

@@ -12,4 +12,4 @@ class Scene(MqttEntityCommon, MqttBase):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_topic: Annotated[str, Field(alias=CONF_COMMAND_TOPIC, min_length=1)]
     payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = None
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN

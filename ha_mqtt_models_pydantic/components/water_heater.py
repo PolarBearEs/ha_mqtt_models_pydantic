@@ -52,13 +52,13 @@ class WaterHeater(MqttEntityCommon, MqttBase):
         "performance",
         "off",
     ]
-    optimistic: Annotated[bool | None, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
-    payload_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OFF)] = "OFF"
-    payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = "ON"
+    optimistic: Annotated[bool, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
+    payload_off: Annotated[str, Field(alias=CONF_PAYLOAD_OFF)] = "OFF"
+    payload_on: Annotated[str, Field(alias=CONF_PAYLOAD_ON)] = "ON"
     power_command_topic: Annotated[str | None, Field(alias=CONF_POWER_COMMAND_TOPIC, min_length=1)] = None
     power_command_template: Annotated[str | None, Field(alias=CONF_POWER_COMMAND_TEMPLATE)] = None
     precision: Annotated[float | None, Field(alias=CONF_PRECISION)] = None
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
     initial: Annotated[float | None, Field(alias=CONF_TEMP_INITIAL)] = None
     min_temp: Annotated[float | None, Field(alias=CONF_TEMP_MIN)] = None
     max_temp: Annotated[float | None, Field(alias=CONF_TEMP_MAX)] = None

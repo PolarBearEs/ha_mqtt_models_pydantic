@@ -60,22 +60,22 @@ class Cover(MqttEntityCommon, MqttReadWrite):
     payload_open: Annotated[str | None, Field(alias=CONF_PAYLOAD_OPEN)] = DEFAULT_PAYLOAD_OPEN
     payload_stop: Annotated[str | None, Field(alias=CONF_PAYLOAD_STOP)] = DEFAULT_PAYLOAD_STOP
     payload_stop_tilt: Annotated[str | None, Field(alias=CONF_PAYLOAD_STOP_TILT)] = DEFAULT_PAYLOAD_STOP
-    position_closed: Annotated[int | None, Field(alias=CONF_POSITION_CLOSED)] = DEFAULT_POSITION_CLOSED
-    position_open: Annotated[int | None, Field(alias=CONF_POSITION_OPEN)] = DEFAULT_POSITION_OPEN
+    position_closed: Annotated[int, Field(alias=CONF_POSITION_CLOSED)] = DEFAULT_POSITION_CLOSED
+    position_open: Annotated[int, Field(alias=CONF_POSITION_OPEN)] = DEFAULT_POSITION_OPEN
     set_position_template: Annotated[str | None, Field(alias=CONF_SET_POSITION_TEMPLATE)] = None
     set_position_topic: Annotated[str | None, Field(alias=CONF_SET_POSITION_TOPIC, min_length=1)] = None
-    state_closed: Annotated[str | None, Field(alias=CONF_STATE_CLOSED)] = DEFAULT_STATE_CLOSED
-    state_closing: Annotated[str | None, Field(alias=CONF_STATE_CLOSING)] = DEFAULT_STATE_CLOSING
-    state_open: Annotated[str | None, Field(alias=CONF_STATE_OPEN)] = DEFAULT_STATE_OPEN
-    state_opening: Annotated[str | None, Field(alias=CONF_STATE_OPENING)] = DEFAULT_STATE_OPENING
-    state_stopped: Annotated[str | None, Field(alias=CONF_STATE_STOPPED)] = DEFAULT_STATE_STOPPED
-    tilt_closed_value: Annotated[int | None, Field(alias=CONF_TILT_CLOSED_POSITION)] = DEFAULT_TILT_CLOSED_POSITION
+    state_closed: Annotated[str, Field(alias=CONF_STATE_CLOSED)] = DEFAULT_STATE_CLOSED
+    state_closing: Annotated[str, Field(alias=CONF_STATE_CLOSING)] = DEFAULT_STATE_CLOSING
+    state_open: Annotated[str, Field(alias=CONF_STATE_OPEN)] = DEFAULT_STATE_OPEN
+    state_opening: Annotated[str, Field(alias=CONF_STATE_OPENING)] = DEFAULT_STATE_OPENING
+    state_stopped: Annotated[str, Field(alias=CONF_STATE_STOPPED)] = DEFAULT_STATE_STOPPED
+    tilt_closed_value: Annotated[int, Field(alias=CONF_TILT_CLOSED_POSITION)] = DEFAULT_TILT_CLOSED_POSITION
     tilt_command_template: Annotated[str | None, Field(alias=CONF_TILT_COMMAND_TEMPLATE)] = None
     tilt_command_topic: Annotated[str | None, Field(alias=CONF_TILT_COMMAND_TOPIC, min_length=1)] = None
-    tilt_max: Annotated[int | None, Field(alias=CONF_TILT_MAX)] = DEFAULT_TILT_MAX
-    tilt_min: Annotated[int | None, Field(alias=CONF_TILT_MIN)] = DEFAULT_TILT_MIN
-    tilt_opened_value: Annotated[int | None, Field(alias=CONF_TILT_OPEN_POSITION)] = DEFAULT_TILT_OPEN_POSITION
-    tilt_optimistic: Annotated[bool | None, Field(alias=CONF_TILT_STATE_OPTIMISTIC)] = DEFAULT_TILT_OPTIMISTIC
+    tilt_max: Annotated[int, Field(alias=CONF_TILT_MAX)] = DEFAULT_TILT_MAX
+    tilt_min: Annotated[int, Field(alias=CONF_TILT_MIN)] = DEFAULT_TILT_MIN
+    tilt_opened_value: Annotated[int, Field(alias=CONF_TILT_OPEN_POSITION)] = DEFAULT_TILT_OPEN_POSITION
+    tilt_optimistic: Annotated[bool, Field(alias=CONF_TILT_STATE_OPTIMISTIC)] = DEFAULT_TILT_OPTIMISTIC
     tilt_status_template: Annotated[str | None, Field(alias=CONF_TILT_STATUS_TEMPLATE)] = None
     tilt_status_topic: Annotated[str | None, Field(alias=CONF_TILT_STATUS_TOPIC, min_length=1)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None

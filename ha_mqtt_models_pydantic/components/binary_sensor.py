@@ -24,7 +24,7 @@ class BinarySensor(MqttEntityCommon, MqttReadOnly):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
     expire_after: Annotated[int | None, Field(gt=0, alias=CONF_EXPIRE_AFTER)] = None
-    force_update: Annotated[bool | None, Field(alias=CONF_FORCE_UPDATE)] = False
+    force_update: Annotated[bool, Field(alias=CONF_FORCE_UPDATE)] = False
     off_delay: Annotated[int | None, Field(gt=0, alias=CONF_OFF_DELAY)] = None
-    payload_off: Annotated[str | None, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
-    payload_on: Annotated[str | None, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON
+    payload_off: Annotated[str, Field(alias=CONF_PAYLOAD_OFF)] = DEFAULT_PAYLOAD_OFF
+    payload_on: Annotated[str, Field(alias=CONF_PAYLOAD_ON)] = DEFAULT_PAYLOAD_ON

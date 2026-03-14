@@ -42,18 +42,18 @@ class Valve(MqttEntityCommon, MqttBase):
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
-    optimistic: Annotated[bool | None, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
+    optimistic: Annotated[bool, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
     payload_close: Annotated[str | None, Field(alias=CONF_PAYLOAD_CLOSE)] = DEFAULT_PAYLOAD_CLOSE
     payload_open: Annotated[str | None, Field(alias=CONF_PAYLOAD_OPEN)] = DEFAULT_PAYLOAD_OPEN
     payload_stop: Annotated[str | None, Field(alias=CONF_PAYLOAD_STOP)] = None
-    position_closed: Annotated[int | None, Field(alias=CONF_POSITION_CLOSED)] = DEFAULT_POSITION_CLOSED
-    position_open: Annotated[int | None, Field(alias=CONF_POSITION_OPEN)] = DEFAULT_POSITION_OPEN
-    reports_position: Annotated[bool | None, Field(alias=CONF_REPORTS_POSITION)] = False
-    retain: Annotated[bool | None, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
-    state_closed: Annotated[str | None, Field(alias=CONF_STATE_CLOSED)] = DEFAULT_STATE_CLOSED
-    state_closing: Annotated[str | None, Field(alias=CONF_STATE_CLOSING)] = DEFAULT_STATE_CLOSING
-    state_open: Annotated[str | None, Field(alias=CONF_STATE_OPEN)] = DEFAULT_STATE_OPEN
-    state_opening: Annotated[str | None, Field(alias=CONF_STATE_OPENING)] = DEFAULT_STATE_OPENING
+    position_closed: Annotated[int, Field(alias=CONF_POSITION_CLOSED)] = DEFAULT_POSITION_CLOSED
+    position_open: Annotated[int, Field(alias=CONF_POSITION_OPEN)] = DEFAULT_POSITION_OPEN
+    reports_position: Annotated[bool, Field(alias=CONF_REPORTS_POSITION)] = False
+    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    state_closed: Annotated[str, Field(alias=CONF_STATE_CLOSED)] = DEFAULT_STATE_CLOSED
+    state_closing: Annotated[str, Field(alias=CONF_STATE_CLOSING)] = DEFAULT_STATE_CLOSING
+    state_open: Annotated[str, Field(alias=CONF_STATE_OPEN)] = DEFAULT_STATE_OPEN
+    state_opening: Annotated[str, Field(alias=CONF_STATE_OPENING)] = DEFAULT_STATE_OPENING
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None
 
