@@ -4,6 +4,7 @@ from typing import Any, cast
 
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from ._typing import ComponentModel, ComponentPayloadParser
 from .abbreviations import ABBREVIATIONS, DEVICE_ABBREVIATIONS, ORIGIN_ABBREVIATIONS
 from .components.alarm_control_panel import AlarmControlPanel
 from .components.binary_sensor import BinarySensor
@@ -69,7 +70,7 @@ def expand_abbreviations(data: Any, abbreviations: dict[str, str] | None = None)
     return expanded
 
 
-COMPONENT_MODELS = {
+COMPONENT_MODELS: dict[str, type[ComponentModel]] = {
     "alarm_control_panel": AlarmControlPanel,
     "binary_sensor": BinarySensor,
     "button": Button,
@@ -136,7 +137,7 @@ def parse_infrared_payload(
     raise ValueError(f"unsupported infrared schema: {schema}")
 
 
-def parse_component_payload(component: str, payload: dict[str, Any], *, expand_aliases: bool = True) -> BaseModel:
+def _parse_component_payload(component: str, payload: dict[str, Any], *, expand_aliases: bool = True) -> ComponentModel:
     if component == "light":
         return parse_light_payload(payload, expand_aliases=expand_aliases)
     if component == "infrared":
@@ -146,7 +147,11 @@ def parse_component_payload(component: str, payload: dict[str, Any], *, expand_a
         model = COMPONENT_MODELS[component]
     except KeyError as err:
         raise ValueError(f"unsupported component: {component}") from err
-    return cast(BaseModel, cast(Any, model).model_validate(parsed))
+    return model.model_validate(parsed)
+
+
+# Typed per component name by the overloads in _typing.py
+parse_component_payload = cast(ComponentPayloadParser, _parse_component_payload)
 
 
 def parse_device_discovery_payload(payload: dict[str, Any], *, expand_aliases: bool = True) -> DeviceDiscoveryPayload:

@@ -1,3 +1,4 @@
+from ._typing import ComponentModel
 from .components import (
     AlarmControlPanel,
     BinarySensor,
@@ -54,6 +55,7 @@ __all__ = [
     "Button",
     "Camera",
     "Climate",
+    "ComponentModel",
     "Cover",
     "Date",
     "DateTime",
