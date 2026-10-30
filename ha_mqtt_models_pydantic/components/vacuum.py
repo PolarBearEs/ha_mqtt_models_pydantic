@@ -9,6 +9,7 @@ from ..const import (
     CONF_CLEAN_SEGMENTS_COMMAND_TOPIC,
     CONF_COMMAND_TOPIC,
     CONF_FAN_SPEED_LIST,
+    CONF_NAME,
     CONF_PAYLOAD_CLEAN_SPOT,
     CONF_PAYLOAD_LOCATE,
     CONF_PAYLOAD_PAUSE,
@@ -28,6 +29,7 @@ from .common import MqttBase, MqttEntityCommon, NotNull
 
 
 class Vacuum(MqttEntityCommon, MqttBase):
+    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     clean_segments_command_template: Annotated[
         str | None, NotNull, Field(alias=CONF_CLEAN_SEGMENTS_COMMAND_TEMPLATE)
     ] = None

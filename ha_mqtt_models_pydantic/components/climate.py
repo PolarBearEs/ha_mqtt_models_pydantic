@@ -23,6 +23,7 @@ from ..const import (
     CONF_MODE_LIST,
     CONF_MODE_STATE_TEMPLATE,
     CONF_MODE_STATE_TOPIC,
+    CONF_NAME,
     CONF_PAYLOAD_OFF,
     CONF_PAYLOAD_ON,
     CONF_POWER_COMMAND_TEMPLATE,
@@ -80,6 +81,7 @@ from .common import MqttEntityCommon, MqttReadWrite
 
 
 class Climate(MqttEntityCommon, MqttReadWrite):
+    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     action_template: Annotated[str | None, Field(alias=CONF_ACTION_TEMPLATE)] = None
     action_topic: Annotated[str | None, Field(alias=CONF_ACTION_TOPIC, min_length=1)] = None
     current_humidity_template: Annotated[str | None, Field(alias=CONF_CURRENT_HUMIDITY_TEMPLATE)] = None

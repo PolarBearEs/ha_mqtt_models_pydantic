@@ -8,7 +8,6 @@ from ha_mqtt_models_pydantic import (
     ComponentModel,
     ComponentName,
     DeviceAutomation,
-    DeviceClassBase,
     EntityModel,
     InfraredEmitter,
     InfraredReceiver,
@@ -92,14 +91,3 @@ def test_type_aliases_match_registered_components() -> None:
     assert entities == models - {DeviceAutomation, Tag}
     assert all(issubclass(model, MqttEntityCommon) for model in entities)
     assert not any(issubclass(model, MqttEntityCommon) for model in models - entities)
-
-
-def test_shared_fields_live_on_base_classes() -> None:
-    entity: EntityModel = parse_component_payload("sensor", {"name": "Temp", "dev_cla": "temperature", "stat_t": "t"})
-    assert entity.name == "Temp"
-    assert isinstance(entity, DeviceClassBase)
-    assert entity.device_class == "temperature"
-
-    humidifier = parse_component_payload("humidifier", {"cmd_t": "h/cmd", "target_humidity_command_topic": "h/t"})
-    assert isinstance(humidifier, DeviceClassBase)
-    assert humidifier.device_class == "humidifier"

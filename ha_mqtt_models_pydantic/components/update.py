@@ -6,9 +6,11 @@ from pydantic import Field
 
 from ..const import (
     CONF_COMMAND_TOPIC,
+    CONF_DEVICE_CLASS,
     CONF_DISPLAY_PRECISION,
     CONF_LATEST_VERSION_TEMPLATE,
     CONF_LATEST_VERSION_TOPIC,
+    CONF_NAME,
     CONF_PAYLOAD_INSTALL,
     CONF_RELEASE_SUMMARY,
     CONF_RELEASE_URL,
@@ -18,11 +20,13 @@ from ..const import (
     CONF_VALUE_TEMPLATE,
     DEFAULT_RETAIN,
 )
-from .common import DeviceClassBase, MqttBase, MqttEntityCommon, PreservedUrl
+from .common import MqttBase, MqttEntityCommon, PreservedUrl
 
 
-class Update(MqttEntityCommon, DeviceClassBase, MqttBase):
+class Update(MqttEntityCommon, MqttBase):
+    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None
+    device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
     display_precision: Annotated[int, Field(alias=CONF_DISPLAY_PRECISION, ge=0)] = 0
     latest_version_template: Annotated[str | None, Field(alias=CONF_LATEST_VERSION_TEMPLATE)] = None
     latest_version_topic: Annotated[str | None, Field(alias=CONF_LATEST_VERSION_TOPIC, min_length=1)] = None

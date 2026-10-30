@@ -27,7 +27,6 @@ from ..const import (
     CONF_CONNECTIONS,
     CONF_DEFAULT_ENTITY_ID,
     CONF_DEVICE,
-    CONF_DEVICE_CLASS,
     CONF_ENABLED_BY_DEFAULT,
     CONF_ENCODING,
     CONF_ENTITY_CATEGORY,
@@ -267,12 +266,7 @@ class MqttReadWrite(MqttBase):
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None
 
 
-class DeviceClassBase(MqttModel):
-    device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
-
-
 class MqttEntityCommon(AvailabilityBase):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     device: Annotated[DeviceInfo | None, Field(alias=CONF_DEVICE)] = None
     entity_picture: Annotated[PreservedUrl | None, Field(alias=CONF_ENTITY_PICTURE)] = None
     origin: Annotated[OriginInfo | None, Field(alias=CONF_ORIGIN)] = None

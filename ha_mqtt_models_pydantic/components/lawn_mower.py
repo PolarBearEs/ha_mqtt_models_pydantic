@@ -9,6 +9,7 @@ from ..const import (
     CONF_ACTIVITY_VALUE_TEMPLATE,
     CONF_DOCK_COMMAND_TEMPLATE,
     CONF_DOCK_COMMAND_TOPIC,
+    CONF_NAME,
     CONF_OPTIMISTIC,
     CONF_PAUSE_COMMAND_TEMPLATE,
     CONF_PAUSE_COMMAND_TOPIC,
@@ -25,6 +26,7 @@ from .common import MqttBase, MqttEntityCommon, NotNull
 
 
 class LawnMower(MqttEntityCommon, MqttBase):
+    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     activity_state_topic: Annotated[str | None, Field(alias=CONF_ACTIVITY_STATE_TOPIC, min_length=1)] = None
     activity_value_template: Annotated[str | None, Field(alias=CONF_ACTIVITY_VALUE_TEMPLATE)] = None
     dock_command_template: Annotated[str | None, Field(alias=CONF_DOCK_COMMAND_TEMPLATE)] = None

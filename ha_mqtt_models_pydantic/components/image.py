@@ -8,6 +8,7 @@ from ..const import (
     CONF_CONTENT_TYPE,
     CONF_IMAGE_ENCODING,
     CONF_IMAGE_TOPIC,
+    CONF_NAME,
     CONF_URL_TEMPLATE,
     CONF_URL_TOPIC,
 )
@@ -15,6 +16,7 @@ from .common import MqttBase, MqttEntityCommon
 
 
 class Image(MqttEntityCommon, MqttBase):
+    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     content_type: Annotated[str | None, Field(alias=CONF_CONTENT_TYPE)] = None
     image_topic: Annotated[str | None, Field(alias=CONF_IMAGE_TOPIC, min_length=1)] = None
     image_encoding: Annotated[str | None, Field(alias=CONF_IMAGE_ENCODING)] = None

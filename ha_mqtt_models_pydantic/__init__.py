@@ -39,7 +39,6 @@ from .components import (
 from .components.common import (
     AvailabilityBase,
     AvailabilityConfig,
-    DeviceClassBase,
     DeviceDiscoveryPayload,
     DeviceInfo,
     MqttBase,
@@ -75,7 +74,6 @@ __all__ = [
     "Date",
     "DateTime",
     "DeviceAutomation",
-    "DeviceClassBase",
     "DeviceDiscoveryPayload",
     "DeviceInfo",
     "DeviceTracker",

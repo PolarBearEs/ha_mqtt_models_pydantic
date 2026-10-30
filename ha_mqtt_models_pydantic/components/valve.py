@@ -7,6 +7,8 @@ from pydantic import Field, model_validator
 from ..const import (
     CONF_COMMAND_TEMPLATE,
     CONF_COMMAND_TOPIC,
+    CONF_DEVICE_CLASS,
+    CONF_NAME,
     CONF_OPTIMISTIC,
     CONF_PAYLOAD_CLOSE,
     CONF_PAYLOAD_OPEN,
@@ -32,12 +34,14 @@ from ..const import (
     DEFAULT_STATE_OPEN,
     DEFAULT_STATE_OPENING,
 )
-from .common import DeviceClassBase, MqttBase, MqttEntityCommon
+from .common import MqttBase, MqttEntityCommon
 
 
-class Valve(MqttEntityCommon, DeviceClassBase, MqttBase):
+class Valve(MqttEntityCommon, MqttBase):
+    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
+    device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
     optimistic: Annotated[bool, Field(alias=CONF_OPTIMISTIC)] = DEFAULT_OPTIMISTIC
     payload_close: Annotated[str | None, Field(alias=CONF_PAYLOAD_CLOSE)] = DEFAULT_PAYLOAD_CLOSE
     payload_open: Annotated[str | None, Field(alias=CONF_PAYLOAD_OPEN)] = DEFAULT_PAYLOAD_OPEN
