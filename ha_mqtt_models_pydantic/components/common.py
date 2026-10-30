@@ -85,7 +85,8 @@ def validate_ha_boolean(value: Any) -> Any:
             return False
     elif isinstance(value, int | float):
         return value != 0
-    return value
+    # Raise instead of falling back to Pydantic, which also accepts strings like "t" and "y"
+    raise ValueError(f"invalid boolean value {value!r}")
 
 
 HaBool = Annotated[bool, BeforeValidator(validate_ha_boolean)]

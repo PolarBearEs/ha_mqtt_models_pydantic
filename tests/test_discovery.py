@@ -602,7 +602,7 @@ def test_new_boolean_fields_follow_home_assistant(value: object, expected: bool)
     assert emitter.retain is expected
 
 
-@pytest.mark.parametrize("value", ["maybe", "", None, [], {}])
+@pytest.mark.parametrize("value", ["maybe", "", "t", "f", "y", "n", None, [], {}])
 def test_new_boolean_fields_reject_invalid_values(value: object) -> None:
     with pytest.raises(ValidationError):
         parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": value})
