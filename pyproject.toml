@@ -4,13 +4,36 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ha-mqtt-models-pydantic"
-version = "1.0.1"
-description = "Add your description here"
+version = "1.1.0"
+description = "Typed Pydantic v2 models for Home Assistant MQTT discovery payloads"
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "PolarBearEs" }]
+keywords = ["home-assistant", "mqtt", "discovery", "pydantic"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Pydantic :: 2",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Home Automation",
+    "Typing :: Typed",
+]
 dependencies = [
     "pydantic>=2.12.5",
 ]
+
+[project.urls]
+Homepage = "https://github.com/PolarBearEs/ha_mqtt_models_pydantic"
+Repository = "https://github.com/PolarBearEs/ha_mqtt_models_pydantic"
+Issues = "https://github.com/PolarBearEs/ha_mqtt_models_pydantic/issues"
+Changelog = "https://github.com/PolarBearEs/ha_mqtt_models_pydantic/releases"
 
 [dependency-groups]
 dev = [
@@ -47,3 +70,6 @@ pythonpath = ["."]
 
 [tool.hatch.build.targets.wheel]
 packages = ["ha_mqtt_models_pydantic"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/ha_mqtt_models_pydantic", "/tests", "/README.md", "/LICENSE"]

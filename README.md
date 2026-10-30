@@ -185,6 +185,13 @@ uv run mypy .
 uv run pytest -q
 ```
 
+### Releasing
+
+1. Bump the version with `uv version <new-version>` and merge it to `main`.
+2. Publish a GitHub release whose tag is `v<new-version>`.
+
+The publish workflow refuses tags that do not match the `pyproject.toml` version, runs the CI checks, then uploads to PyPI.
+
 ## License
 
 MIT
