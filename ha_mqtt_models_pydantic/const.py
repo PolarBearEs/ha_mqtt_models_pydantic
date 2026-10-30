@@ -3,6 +3,9 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final
 
+# Home Assistant core release the discovery schemas were synced from; update on every sync.
+HA_CORE_VERSION: Final = "2026.10.4"
+
 # Common Home Assistant constants used by the local Pydantic models.
 CONF_AUTOMATION_TYPE: Final = "automation_type"
 CONF_CODE: Final = "code"

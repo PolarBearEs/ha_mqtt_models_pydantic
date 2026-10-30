@@ -166,6 +166,7 @@ device_payload = parse_device_discovery_payload(
 - The PyPI distribution name is `ha-mqtt-models-pydantic`.
 - The library targets Python `3.11+`.
 - The package is marked as typed with `py.typed`.
+- The models match the MQTT discovery schemas of Home Assistant core `2026.10.4` (`master`), exposed as `HA_CORE_VERSION`.
 
 ## Development
 

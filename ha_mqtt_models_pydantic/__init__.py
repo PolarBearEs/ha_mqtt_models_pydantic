@@ -36,6 +36,7 @@ from .components import (
     WaterHeater,
 )
 from .components.common import DeviceInfo, MqttEntityCommon, OriginInfo
+from .const import HA_CORE_VERSION
 from .discovery import (
     COMPONENT_MODELS,
     DiscoveryPayload,
@@ -47,6 +48,7 @@ from .discovery import (
 
 __all__ = [
     "COMPONENT_MODELS",
+    "HA_CORE_VERSION",
     "AlarmControlPanel",
     "BinarySensor",
     "Button",
