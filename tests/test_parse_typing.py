@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from typing import assert_type
+import re
+from typing import assert_type, get_overloads
 
 from ha_mqtt_models_pydantic import (
+    COMPONENT_MODELS,
     ComponentModel,
     InfraredEmitter,
     InfraredReceiver,
@@ -14,6 +16,7 @@ from ha_mqtt_models_pydantic import (
     Vacuum,
     parse_component_payload,
 )
+from ha_mqtt_models_pydantic._typing import ComponentPayloadParser
 
 # assert_type is a no-op at runtime; mypy checks these against the parse_component_payload overloads.
 
@@ -48,3 +51,25 @@ def test_dynamic_component_returns_component_model_union() -> None:
     model = parse_component_payload(component, {"stat_t": "sensor/state"})
     assert_type(model, ComponentModel)
     assert isinstance(model, Sensor)
+
+
+def test_overloads_cover_every_registered_component() -> None:
+    schema_dispatched = {
+        "infrared": "InfraredEmitter | InfraredReceiver",
+        "light": "LightBasic | LightJson | LightTemplate",
+    }
+
+    # A Protocol method without an implementation resolves to typing's overload dummy, so look the
+    # overloads up by the module and qualified name they are registered under.
+    def protocol_call() -> None: ...
+
+    protocol_call.__module__ = ComponentPayloadParser.__module__
+    protocol_call.__qualname__ = f"{ComponentPayloadParser.__qualname__}.__call__"
+
+    returns: dict[str, str] = {}
+    for overload_ in get_overloads(protocol_call):
+        if match := re.fullmatch(r"Literal\[['\"](\w+)['\"]\]", overload_.__annotations__["component"]):
+            returns[match.group(1)] = overload_.__annotations__["return"]
+
+    expected = {name: schema_dispatched.get(name, model.__name__) for name, model in COMPONENT_MODELS.items()}
+    assert returns == expected

@@ -1,3 +1,4 @@
+from ._typing import ComponentModel
 from .components import (
     AlarmControlPanel,
     BinarySensor,
@@ -39,7 +40,6 @@ from .components.common import DeviceInfo, MqttEntityCommon, OriginInfo
 from .const import HA_CORE_VERSION
 from .discovery import (
     COMPONENT_MODELS,
-    ComponentModel,
     DiscoveryPayload,
     parse_component_payload,
     parse_device_discovery_payload,

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Literal, TypeAlias, overload
+from typing import Any, cast
 
 from pydantic import BaseModel, ConfigDict, model_validator
 
+from ._typing import ComponentModel, ComponentPayloadParser
 from .abbreviations import ABBREVIATIONS, DEVICE_ABBREVIATIONS, ORIGIN_ABBREVIATIONS
 from .components.alarm_control_panel import AlarmControlPanel
 from .components.binary_sensor import BinarySensor
@@ -67,45 +68,6 @@ def expand_abbreviations(data: Any, abbreviations: dict[str, str] | None = None)
         else:
             expanded[new_key] = value
     return expanded
-
-
-ComponentModel: TypeAlias = (
-    AlarmControlPanel
-    | BinarySensor
-    | Button
-    | Camera
-    | Climate
-    | Cover
-    | Date
-    | DateTime
-    | DeviceAutomation
-    | DeviceTracker
-    | Event
-    | Fan
-    | Humidifier
-    | Image
-    | InfraredEmitter
-    | InfraredReceiver
-    | LawnMower
-    | LightBasic
-    | LightJson
-    | LightTemplate
-    | Lock
-    | Notify
-    | Number
-    | Scene
-    | Select
-    | Sensor
-    | Siren
-    | Switch
-    | Tag
-    | Text
-    | Time
-    | Update
-    | Vacuum
-    | Valve
-    | WaterHeater
-)
 
 
 COMPONENT_MODELS: dict[str, type[ComponentModel]] = {
@@ -175,205 +137,7 @@ def parse_infrared_payload(
     raise ValueError(f"unsupported infrared schema: {schema}")
 
 
-@overload
-def parse_component_payload(
-    component: Literal["alarm_control_panel"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> AlarmControlPanel: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["binary_sensor"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> BinarySensor: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["button"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Button: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["camera"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Camera: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["climate"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Climate: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["cover"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Cover: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["date"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Date: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["datetime"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> DateTime: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["device_automation"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> DeviceAutomation: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["device_tracker"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> DeviceTracker: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["event"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Event: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["fan"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Fan: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["humidifier"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Humidifier: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["image"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Image: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["infrared"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> InfraredEmitter | InfraredReceiver: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["lawn_mower"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> LawnMower: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["light"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> LightBasic | LightJson | LightTemplate: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["lock"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Lock: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["notify"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Notify: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["number"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Number: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["scene"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Scene: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["select"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Select: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["sensor"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Sensor: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["siren"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Siren: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["switch"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Switch: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["tag"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Tag: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["text"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Text: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["time"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Time: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["update"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Update: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["vacuum"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Vacuum: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["valve"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> Valve: ...
-
-
-@overload
-def parse_component_payload(
-    component: Literal["water_heater"], payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> WaterHeater: ...
-
-
-@overload
-def parse_component_payload(
-    component: str, payload: dict[str, Any], *, expand_aliases: bool = ...
-) -> ComponentModel: ...
-
-
-def parse_component_payload(component: str, payload: dict[str, Any], *, expand_aliases: bool = True) -> ComponentModel:
+def _parse_component_payload(component: str, payload: dict[str, Any], *, expand_aliases: bool = True) -> ComponentModel:
     if component == "light":
         return parse_light_payload(payload, expand_aliases=expand_aliases)
     if component == "infrared":
@@ -384,6 +148,10 @@ def parse_component_payload(component: str, payload: dict[str, Any], *, expand_a
     except KeyError as err:
         raise ValueError(f"unsupported component: {component}") from err
     return model.model_validate(parsed)
+
+
+# Typed per component name by the overloads in _typing.py
+parse_component_payload = cast(ComponentPayloadParser, _parse_component_payload)
 
 
 def parse_device_discovery_payload(payload: dict[str, Any], *, expand_aliases: bool = True) -> DeviceDiscoveryPayload:
