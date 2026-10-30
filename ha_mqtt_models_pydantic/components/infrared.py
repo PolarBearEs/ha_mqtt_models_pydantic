@@ -14,7 +14,7 @@ from ..const import (
     CONF_VALUE_TEMPLATE,
     DEFAULT_RETAIN,
 )
-from .common import MqttBase, MqttEntityCommon
+from .common import HaBool, MqttBase, MqttEntityCommon
 
 
 class InfraredEmitter(MqttEntityCommon, MqttBase):
@@ -22,7 +22,7 @@ class InfraredEmitter(MqttEntityCommon, MqttBase):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     command_topic: Annotated[str, Field(alias=CONF_COMMAND_TOPIC, min_length=1)]
-    retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
+    retain: Annotated[HaBool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
 
 
 class InfraredReceiver(MqttEntityCommon, MqttBase):

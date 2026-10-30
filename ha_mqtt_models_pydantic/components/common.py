@@ -69,8 +69,33 @@ PreservedUrl = Annotated[AnyUrl, UrlConstraints(preserve_empty_path=True)]
 TIME_PERIOD_KEYS = ("days", "hours", "minutes", "seconds", "milliseconds")
 
 
+HA_TRUE_STRINGS = ("1", "true", "yes", "on", "enable")
+HA_FALSE_STRINGS = ("0", "false", "no", "off", "disable")
+
+
+def validate_ha_boolean(value: Any) -> Any:
+    """Coerce a boolean the way Home Assistant's cv.boolean does."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = value.lower().strip()
+        if normalized in HA_TRUE_STRINGS:
+            return True
+        if normalized in HA_FALSE_STRINGS:
+            return False
+    elif isinstance(value, int | float):
+        return value != 0
+    return value
+
+
+HaBool = Annotated[bool, BeforeValidator(validate_ha_boolean)]
+
+
 def validate_time_period_seconds(value: Any) -> Any:
     """Convert a Home Assistant time period dict to whole seconds."""
+    if isinstance(value, bool):
+        # Home Assistant coerces integers, and bool is an int
+        return int(value)
     if not isinstance(value, dict):
         return value
     if unknown := sorted(set(value) - set(TIME_PERIOD_KEYS)):
@@ -240,7 +265,7 @@ class MqttEntityCommon(AvailabilityBase):
     default_entity_id: Annotated[str | None, Field(alias=CONF_DEFAULT_ENTITY_ID)] = None
     message_expiry_interval: MessageExpiryInterval = None
     unique_id: Annotated[str | None, Field(alias=CONF_UNIQUE_ID)] = None
-    visible_by_default: Annotated[bool, Field(alias=CONF_VISIBLE_BY_DEFAULT)] = True
+    visible_by_default: Annotated[HaBool, Field(alias=CONF_VISIBLE_BY_DEFAULT)] = True
 
 
 class DeviceDiscoveryComponent(MqttModel):

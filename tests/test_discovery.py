@@ -516,7 +516,15 @@ def test_visible_by_default() -> None:
 
 @pytest.mark.parametrize(
     "value,expected",
-    [(30, 30), (0, 0), ({"minutes": 1, "seconds": 5}, 65), ({"hours": 1.5}, 5400), ({"milliseconds": 1500}, 1)],
+    [
+        (30, 30),
+        (0, 0),
+        (True, 1),
+        (False, 0),
+        ({"minutes": 1, "seconds": 5}, 65),
+        ({"hours": 1.5}, 5400),
+        ({"milliseconds": 1500}, 1),
+    ],
 )
 def test_message_expiry_interval_parses(value: object, expected: int) -> None:
     parsed = parse_component_payload("switch", {"cmd_t": "switch/cmd", "msg_exp_int": value})
@@ -529,7 +537,6 @@ def test_message_expiry_interval_parses(value: object, expected: int) -> None:
         -1,
         "30",
         1.5,
-        True,
         {},
         {"weeks": 1},
         {"seconds": -5},
@@ -568,3 +575,36 @@ def test_vacuum_clean_segments_requires_unique_id() -> None:
     assert parsed.model_dump()["clean_segments_command_topic"] == "vacuum/segments"
     with pytest.raises(ValidationError, match="requires unique_id"):
         parse_component_payload("vacuum", {"cln_segmnts_cmd_t": "vacuum/segments"})
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        (True, True),
+        (False, False),
+        (1, True),
+        (0, False),
+        (2, True),
+        (-1, True),
+        (1.5, True),
+        (0.0, False),
+        ("enable", True),
+        ("disable", False),
+        (" ON ", True),
+        ("No", False),
+    ],
+)
+def test_new_boolean_fields_follow_home_assistant(value: object, expected: bool) -> None:
+    sensor = parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": value})
+    assert sensor.model_dump()["visible_by_default"] is expected
+    emitter = parse_infrared_payload({"schema": "emitter", "cmd_t": "infrared/send", "ret": value})
+    assert isinstance(emitter, InfraredEmitter)
+    assert emitter.retain is expected
+
+
+@pytest.mark.parametrize("value", ["maybe", "", None, [], {}])
+def test_new_boolean_fields_reject_invalid_values(value: object) -> None:
+    with pytest.raises(ValidationError):
+        parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": value})
+    with pytest.raises(ValidationError):
+        parse_infrared_payload({"schema": "emitter", "cmd_t": "infrared/send", "ret": value})
