@@ -7,18 +7,16 @@ from pydantic import Field, model_validator
 
 from ..const import (
     CONF_COMMAND_TEMPLATE,
-    CONF_DEVICE_CLASS,
     CONF_MAX,
     CONF_MIN,
     CONF_MODE,
-    CONF_NAME,
     CONF_PAYLOAD_RESET,
     CONF_STEP,
     CONF_UNIT_OF_MEASUREMENT,
     CONF_VALUE_TEMPLATE,
     DEFAULT_PAYLOAD_RESET,
 )
-from .common import MqttEntityCommon, MqttReadWrite
+from .common import DeviceClassBase, MqttEntityCommon, MqttReadWrite
 
 
 class NumberMode(StrEnum):
@@ -27,10 +25,8 @@ class NumberMode(StrEnum):
     SLIDER = "slider"
 
 
-class Number(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
+class Number(MqttEntityCommon, DeviceClassBase, MqttReadWrite):
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
-    device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
     max: Annotated[float, Field(alias=CONF_MAX)] = 100.0
     min: Annotated[float, Field(alias=CONF_MIN)] = 1.0
     mode: Annotated[NumberMode, Field(alias=CONF_MODE)] = NumberMode.AUTO

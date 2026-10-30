@@ -5,10 +5,8 @@ from typing import Annotated
 from pydantic import Field, model_validator
 
 from ..const import (
-    CONF_DEVICE_CLASS,
     CONF_GET_POSITION_TEMPLATE,
     CONF_GET_POSITION_TOPIC,
-    CONF_NAME,
     CONF_PAYLOAD_CLOSE,
     CONF_PAYLOAD_OPEN,
     CONF_PAYLOAD_STOP,
@@ -49,12 +47,10 @@ from ..const import (
     DEFAULT_TILT_OPEN_POSITION,
     DEFAULT_TILT_OPTIMISTIC,
 )
-from .common import MqttEntityCommon, MqttReadWrite
+from .common import DeviceClassBase, MqttEntityCommon, MqttReadWrite
 
 
-class Cover(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
-    device_class: Annotated[str | None, Field(alias=CONF_DEVICE_CLASS)] = None
+class Cover(MqttEntityCommon, DeviceClassBase, MqttReadWrite):
     get_position_topic: Annotated[str | None, Field(alias=CONF_GET_POSITION_TOPIC, min_length=1)] = None
     payload_close: Annotated[str | None, Field(alias=CONF_PAYLOAD_CLOSE)] = DEFAULT_PAYLOAD_CLOSE
     payload_open: Annotated[str | None, Field(alias=CONF_PAYLOAD_OPEN)] = DEFAULT_PAYLOAD_OPEN

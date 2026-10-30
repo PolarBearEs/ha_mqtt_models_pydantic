@@ -5,7 +5,6 @@ from typing import Annotated
 from pydantic import Field, model_validator
 
 from ..const import (
-    CONF_NAME,
     CONF_PAYLOAD_HOME,
     CONF_PAYLOAD_NOT_HOME,
     CONF_PAYLOAD_RESET,
@@ -20,7 +19,6 @@ from .common import MqttBase, MqttEntityCommon
 
 
 class DeviceTracker(MqttEntityCommon, MqttBase):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None
     value_template: Annotated[str | None, Field(alias=CONF_VALUE_TEMPLATE)] = None
     payload_home: Annotated[str, Field(alias=CONF_PAYLOAD_HOME)] = DEFAULT_PAYLOAD_HOME

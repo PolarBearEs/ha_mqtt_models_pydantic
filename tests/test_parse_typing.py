@@ -1,18 +1,24 @@
 from __future__ import annotations
 
 import re
-from typing import assert_type, get_overloads
+from typing import assert_type, get_args, get_overloads
 
 from ha_mqtt_models_pydantic import (
     COMPONENT_MODELS,
     ComponentModel,
+    ComponentName,
+    DeviceAutomation,
+    DeviceClassBase,
+    EntityModel,
     InfraredEmitter,
     InfraredReceiver,
     LightBasic,
     LightJson,
     LightTemplate,
+    MqttEntityCommon,
     Sensor,
     Switch,
+    Tag,
     Vacuum,
     parse_component_payload,
 )
@@ -73,3 +79,27 @@ def test_overloads_cover_every_registered_component() -> None:
 
     expected = {name: schema_dispatched.get(name, model.__name__) for name, model in COMPONENT_MODELS.items()}
     assert returns == expected
+
+
+def test_type_aliases_match_registered_components() -> None:
+    assert set(get_args(ComponentName)) == set(COMPONENT_MODELS)
+
+    models = set(get_args(ComponentModel))
+    assert set(COMPONENT_MODELS.values()) <= models
+    assert models - set(COMPONENT_MODELS.values()) == {InfraredReceiver, LightJson, LightTemplate}
+
+    entities = set(get_args(EntityModel))
+    assert entities == models - {DeviceAutomation, Tag}
+    assert all(issubclass(model, MqttEntityCommon) for model in entities)
+    assert not any(issubclass(model, MqttEntityCommon) for model in models - entities)
+
+
+def test_shared_fields_live_on_base_classes() -> None:
+    entity: EntityModel = parse_component_payload("sensor", {"name": "Temp", "dev_cla": "temperature", "stat_t": "t"})
+    assert entity.name == "Temp"
+    assert isinstance(entity, DeviceClassBase)
+    assert entity.device_class == "temperature"
+
+    humidifier = parse_component_payload("humidifier", {"cmd_t": "h/cmd", "target_humidity_command_topic": "h/t"})
+    assert isinstance(humidifier, DeviceClassBase)
+    assert humidifier.device_class == "humidifier"

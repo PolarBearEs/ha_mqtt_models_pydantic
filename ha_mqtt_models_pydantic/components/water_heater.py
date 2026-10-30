@@ -12,7 +12,6 @@ from ..const import (
     CONF_MODE_LIST,
     CONF_MODE_STATE_TEMPLATE,
     CONF_MODE_STATE_TOPIC,
-    CONF_NAME,
     CONF_OPTIMISTIC,
     CONF_PAYLOAD_OFF,
     CONF_PAYLOAD_ON,
@@ -36,7 +35,6 @@ from .common import MqttBase, MqttEntityCommon
 
 
 class WaterHeater(MqttEntityCommon, MqttBase):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     current_temperature_template: Annotated[str | None, Field(alias=CONF_CURRENT_TEMP_TEMPLATE)] = None
     current_temperature_topic: Annotated[str | None, Field(alias=CONF_CURRENT_TEMP_TOPIC, min_length=1)] = None
     mode_command_template: Annotated[str | None, Field(alias=CONF_MODE_COMMAND_TEMPLATE)] = None

@@ -43,7 +43,6 @@ from ..const import (
     CONF_MAX_MIREDS,
     CONF_MIN_KELVIN,
     CONF_MIN_MIREDS,
-    CONF_NAME,
     CONF_ON_COMMAND_TYPE,
     CONF_PAYLOAD_OFF,
     CONF_PAYLOAD_ON,
@@ -85,11 +84,10 @@ from ..const import (
     DEFAULT_RETAIN,
     DEFAULT_WHITE_SCALE,
 )
-from .common import MqttBase, MqttEntityCommon, MqttModel, MqttReadWrite
+from .common import MqttBase, MqttEntityCommon, MqttReadWrite
 
 
-class _BaseLight(MqttEntityCommon, MqttModel):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
+class _BaseLight(MqttEntityCommon):
     light_schema: Annotated[str | None, Field(alias=CONF_SCHEMA)] = None
 
 

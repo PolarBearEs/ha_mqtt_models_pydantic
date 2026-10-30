@@ -8,7 +8,6 @@ from ..const import (
     CONF_AVAILABLE_TONES,
     CONF_COMMAND_OFF_TEMPLATE,
     CONF_COMMAND_TEMPLATE,
-    CONF_NAME,
     CONF_PAYLOAD_OFF,
     CONF_PAYLOAD_ON,
     CONF_STATE_OFF,
@@ -23,7 +22,6 @@ from .common import MqttEntityCommon, MqttReadWrite
 
 
 class Siren(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     available_tones: Annotated[list[str] | None, Field(alias=CONF_AVAILABLE_TONES)] = None
     command_off_template: Annotated[str | None, Field(alias=CONF_COMMAND_OFF_TEMPLATE)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None

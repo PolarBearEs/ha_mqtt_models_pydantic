@@ -10,7 +10,6 @@ from ..const import (
     CONF_DIRECTION_COMMAND_TOPIC,
     CONF_DIRECTION_STATE_TOPIC,
     CONF_DIRECTION_VALUE_TEMPLATE,
-    CONF_NAME,
     CONF_OSCILLATION_COMMAND_TEMPLATE,
     CONF_OSCILLATION_COMMAND_TOPIC,
     CONF_OSCILLATION_STATE_TOPIC,
@@ -45,7 +44,6 @@ from .common import MqttEntityCommon, MqttReadWrite
 
 
 class Fan(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     direction_command_topic: Annotated[str | None, Field(alias=CONF_DIRECTION_COMMAND_TOPIC, min_length=1)] = None
     direction_command_template: Annotated[str | None, Field(alias=CONF_DIRECTION_COMMAND_TEMPLATE)] = None

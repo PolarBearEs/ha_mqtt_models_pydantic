@@ -42,6 +42,41 @@ from .components import (
     WaterHeater,
 )
 
+ComponentName: TypeAlias = Literal[
+    "alarm_control_panel",
+    "binary_sensor",
+    "button",
+    "camera",
+    "climate",
+    "cover",
+    "date",
+    "datetime",
+    "device_automation",
+    "device_tracker",
+    "event",
+    "fan",
+    "humidifier",
+    "image",
+    "infrared",
+    "lawn_mower",
+    "light",
+    "lock",
+    "notify",
+    "number",
+    "scene",
+    "select",
+    "sensor",
+    "siren",
+    "switch",
+    "tag",
+    "text",
+    "time",
+    "update",
+    "vacuum",
+    "valve",
+    "water_heater",
+]
+
 ComponentModel: TypeAlias = (
     AlarmControlPanel
     | BinarySensor
@@ -72,6 +107,43 @@ ComponentModel: TypeAlias = (
     | Siren
     | Switch
     | Tag
+    | Text
+    | Time
+    | Update
+    | Vacuum
+    | Valve
+    | WaterHeater
+)
+
+# Every component model that describes an entity, i.e. all but the device_automation and tag ones
+EntityModel: TypeAlias = (
+    AlarmControlPanel
+    | BinarySensor
+    | Button
+    | Camera
+    | Climate
+    | Cover
+    | Date
+    | DateTime
+    | DeviceTracker
+    | Event
+    | Fan
+    | Humidifier
+    | Image
+    | InfraredEmitter
+    | InfraredReceiver
+    | LawnMower
+    | LightBasic
+    | LightJson
+    | LightTemplate
+    | Lock
+    | Notify
+    | Number
+    | Scene
+    | Select
+    | Sensor
+    | Siren
+    | Switch
     | Text
     | Time
     | Update

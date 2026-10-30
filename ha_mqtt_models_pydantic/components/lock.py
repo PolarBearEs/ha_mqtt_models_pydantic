@@ -7,7 +7,6 @@ from pydantic import Field
 from ..const import (
     CONF_CODE_FORMAT,
     CONF_COMMAND_TEMPLATE,
-    CONF_NAME,
     CONF_PAYLOAD_LOCK,
     CONF_PAYLOAD_OPEN,
     CONF_PAYLOAD_RESET,
@@ -36,7 +35,6 @@ from .common import MqttEntityCommon, MqttReadWrite
 
 
 class Lock(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     code_format: Annotated[str | None, Field(alias=CONF_CODE_FORMAT)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
     payload_lock: Annotated[str, Field(alias=CONF_PAYLOAD_LOCK)] = DEFAULT_PAYLOAD_LOCK

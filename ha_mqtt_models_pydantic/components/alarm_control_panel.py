@@ -11,7 +11,6 @@ from ..const import (
     CONF_CODE_TRIGGER_REQUIRED,
     CONF_COMMAND_TEMPLATE,
     CONF_COMMAND_TOPIC,
-    CONF_NAME,
     CONF_PAYLOAD_ARM_AWAY,
     CONF_PAYLOAD_ARM_CUSTOM_BYPASS,
     CONF_PAYLOAD_ARM_HOME,
@@ -35,7 +34,6 @@ from .common import MqttEntityCommon, MqttReadWrite
 
 
 class AlarmControlPanel(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
     command_topic: Annotated[str, Field(alias=CONF_COMMAND_TOPIC, min_length=1)]
     state_topic: Annotated[str, Field(alias=CONF_STATE_TOPIC, min_length=1)]
     code: Annotated[str | None, Field(alias=CONF_CODE)] = None

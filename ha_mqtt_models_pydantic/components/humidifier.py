@@ -16,7 +16,6 @@ from ..const import (
     CONF_MODE_LIST,
     CONF_MODE_STATE_TEMPLATE,
     CONF_MODE_STATE_TOPIC,
-    CONF_NAME,
     CONF_PAYLOAD_OFF,
     CONF_PAYLOAD_ON,
     CONF_PAYLOAD_RESET_HUMIDITY,
@@ -34,11 +33,10 @@ from ..const import (
     DEFAULT_PAYLOAD_ON,
     DEFAULT_PAYLOAD_RESET,
 )
-from .common import MqttEntityCommon, MqttReadWrite
+from .common import DeviceClassBase, MqttEntityCommon, MqttReadWrite
 
 
-class Humidifier(MqttEntityCommon, MqttReadWrite):
-    name: Annotated[str | None, Field(alias=CONF_NAME)] = None
+class Humidifier(MqttEntityCommon, DeviceClassBase, MqttReadWrite):
     action_template: Annotated[str | None, Field(alias=CONF_ACTION_TEMPLATE)] = None
     action_topic: Annotated[str | None, Field(alias=CONF_ACTION_TOPIC, min_length=1)] = None
     command_template: Annotated[str | None, Field(alias=CONF_COMMAND_TEMPLATE)] = None
