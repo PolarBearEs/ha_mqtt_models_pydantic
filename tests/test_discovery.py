@@ -5,11 +5,13 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
+from ha_mqtt_models_pydantic.components.infrared import InfraredEmitter, InfraredReceiver
 from ha_mqtt_models_pydantic.components.light import LightBasic, LightJson, LightTemplate
 from ha_mqtt_models_pydantic.discovery import (
     COMPONENT_MODELS,
     parse_component_payload,
     parse_device_discovery_payload,
+    parse_infrared_payload,
     parse_light_payload,
 )
 
@@ -32,6 +34,8 @@ MINIMAL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
     "camera": {"t": "camera/image"},
     "climate": {"mode_cmd_t": "climate/mode/set"},
     "cover": {"cmd_t": "cover/cmd"},
+    "date": {"cmd_t": "date/set"},
+    "datetime": {"cmd_t": "datetime/set"},
     "device_automation": {
         "atype": "trigger",
         "dev": {"ids": ["device-1"]},
@@ -44,6 +48,7 @@ MINIMAL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
     "fan": {"cmd_t": "fan/cmd"},
     "humidifier": {"hum_cmd_t": "humidifier/humidity/set"},
     "image": {"img_t": "image/topic"},
+    "infrared": {"schema": "emitter", "cmd_t": "infrared/send"},
     "lawn_mower": {"dock_cmd_t": "mower/dock"},
     "lock": {"cmd_t": "lock/cmd"},
     "notify": {"cmd_t": "notify/send"},
@@ -55,6 +60,7 @@ MINIMAL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
     "switch": {"cmd_t": "switch/cmd"},
     "tag": {"t": "tag/topic"},
     "text": {"cmd_t": "text/set"},
+    "time": {"cmd_t": "time/set"},
     "update": {"stat_t": "update/state"},
     "vacuum": {"cmd_t": "vacuum/cmd"},
     "valve": {"cmd_t": "valve/cmd"},
@@ -154,6 +160,19 @@ FULL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
         "min_hum": 35,
         "max_hum": 80,
     },
+    "date": {
+        **ENTITY_COMMON,
+        "cmd_t": "date/set",
+        "cmd_tpl": "{{ value }}",
+        "stat_t": "date/state",
+        "val_tpl": "{{ value_json.date }}",
+    },
+    "datetime": {
+        **ENTITY_COMMON,
+        "cmd_t": "datetime/set",
+        "stat_t": "datetime/state",
+        "tz": "Europe/Madrid",
+    },
     "image": {
         **ENTITY_COMMON,
         "img_t": "image/topic",
@@ -166,6 +185,8 @@ FULL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
         "dock_cmd_t": "mower/dock",
         "pause_cmd_t": "mower/pause",
         "strt_mw_cmd_t": "mower/start",
+        "stop_cmd_t": "mower/stop",
+        "stop_cmd_tpl": "{{ value }}",
     },
     "lock": {
         **ENTITY_COMMON,
@@ -230,6 +251,12 @@ FULL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
         "dev": {"ids": ["device-1"], "name": "Tag Device"},
         "val_tpl": "{{ value }}",
     },
+    "infrared": {
+        **ENTITY_COMMON,
+        "schema": "receiver",
+        "stat_t": "infrared/received",
+        "val_tpl": "{{ value_json }}",
+    },
     "text": {
         **ENTITY_COMMON,
         "cmd_t": "text/set",
@@ -237,6 +264,12 @@ FULL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
         "ptrn": "^[A-Z]+$",
         "min": 1,
         "max": 32,
+    },
+    "time": {
+        **ENTITY_COMMON,
+        "cmd_t": "time/set",
+        "stat_t": "time/state",
+        "ret": True,
     },
     "update": {
         **ENTITY_COMMON,
@@ -254,6 +287,8 @@ FULL_COMPONENT_PAYLOADS: dict[str, dict[str, Any]] = {
         "set_fan_spd_t": "vacuum/fan",
         "fanspd_lst": ["quiet", "max"],
         "sup_feat": ["start", "stop", "return_home"],
+        "cln_segmnts_cmd_t": "vacuum/clean_segments",
+        "cln_segmnts_cmd_tpl": "{{ value | tojson }}",
     },
     "valve": {
         **ENTITY_COMMON,
@@ -314,12 +349,15 @@ def test_registry_covers_all_supported_components() -> None:
         "camera",
         "climate",
         "cover",
+        "date",
+        "datetime",
         "device_automation",
         "device_tracker",
         "event",
         "fan",
         "humidifier",
         "image",
+        "infrared",
         "lawn_mower",
         "light",
         "lock",
@@ -332,6 +370,7 @@ def test_registry_covers_all_supported_components() -> None:
         "switch",
         "tag",
         "text",
+        "time",
         "update",
         "vacuum",
         "valve",
@@ -438,3 +477,199 @@ def test_string_like_fields_coerce_scalar_values() -> None:
     assert dumped["device"]["identifiers"] == ["1", "2"]
     assert dumped["device"]["name"] == "False"
     assert dumped["device"]["manufacturer"] == "123"
+
+
+def test_new_platforms_require_command_topic() -> None:
+    for component in ("date", "datetime", "time"):
+        with pytest.raises(ValidationError):
+            parse_component_payload(component, {"stat_t": f"{component}/state"})
+
+
+def test_datetime_timezone_expanded() -> None:
+    parsed = parse_component_payload("datetime", {"cmd_t": "datetime/set", "tz": "UTC"})
+    assert parsed.model_dump()["timezone"] == "UTC"
+
+
+def test_infrared_schema_dispatch() -> None:
+    emitter = parse_infrared_payload({"schema": "emitter", "cmd_t": "infrared/send", "ret": True})
+    assert isinstance(emitter, InfraredEmitter)
+    assert emitter.retain is True
+
+    receiver = parse_component_payload("infrared", {"schema": "receiver", "stat_t": "infrared/received"})
+    assert isinstance(receiver, InfraredReceiver)
+
+
+def test_infrared_invalid_payloads_rejected() -> None:
+    with pytest.raises(ValueError, match="unsupported infrared schema"):
+        parse_infrared_payload({"cmd_t": "infrared/send"})
+    with pytest.raises(ValidationError):
+        parse_infrared_payload({"schema": "emitter", "stat_t": "infrared/received"})
+    with pytest.raises(ValidationError):
+        parse_infrared_payload({"schema": "receiver", "cmd_t": "infrared/send"})
+
+
+def test_visible_by_default() -> None:
+    assert parse_component_payload("sensor", {"stat_t": "sensor/state"}).model_dump()["visible_by_default"] is True
+    parsed = parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": False})
+    assert parsed.model_dump()["visible_by_default"] is False
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        (30, 30),
+        (0, 0),
+        (True, 1),
+        (False, 0),
+        ({"minutes": 1, "seconds": 5}, 65),
+        ({"hours": 1.5}, 5400),
+        ({"milliseconds": 1500}, 1),
+    ],
+)
+def test_message_expiry_interval_parses(value: object, expected: int) -> None:
+    parsed = parse_component_payload("switch", {"cmd_t": "switch/cmd", "msg_exp_int": value})
+    assert parsed.model_dump()["message_expiry_interval"] == expected
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        -1,
+        "30",
+        1.5,
+        {},
+        {"weeks": 1},
+        {"seconds": -5},
+        {"seconds": "x"},
+        {"seconds": 1e100},
+        {"seconds": float("inf")},
+        {"seconds": float("nan")},
+        None,
+    ],
+)
+def test_message_expiry_interval_rejected(value: object) -> None:
+    with pytest.raises(ValidationError):
+        parse_component_payload("switch", {"cmd_t": "switch/cmd", "msg_exp_int": value})
+
+
+def test_device_discovery_message_expiry_interval() -> None:
+    parsed = parse_device_discovery_payload(
+        {
+            "dev": {"ids": ["device-1"]},
+            "o": {"name": "bridge"},
+            "cmps": {"temperature": {"p": "sensor", "uniq_id": "temperature-1", "stat_t": "device/temperature"}},
+            "msg_exp_int": {"hours": 1},
+        }
+    )
+    assert parsed.message_expiry_interval == 3600
+    with pytest.raises(ValidationError):
+        parse_device_discovery_payload(
+            {
+                "dev": {"ids": ["device-1"]},
+                "o": {"name": "bridge"},
+                "cmps": {"temperature": {"p": "sensor", "uniq_id": "temperature-1", "stat_t": "device/temperature"}},
+                "msg_exp_int": None,
+            }
+        )
+
+
+def test_lawn_mower_stop_command() -> None:
+    parsed = parse_component_payload("lawn_mower", {"stop_cmd_t": "mower/stop", "stop_cmd_tpl": "{{ value }}"})
+    dumped = parsed.model_dump()
+    assert dumped["stop_command_topic"] == "mower/stop"
+    assert dumped["stop_command_template"] == "{{ value }}"
+
+
+def test_vacuum_clean_segments_requires_unique_id() -> None:
+    parsed = parse_component_payload("vacuum", {"cln_segmnts_cmd_t": "vacuum/segments", "uniq_id": "vacuum-1"})
+    assert parsed.model_dump()["clean_segments_command_topic"] == "vacuum/segments"
+    with pytest.raises(ValidationError, match="requires unique_id"):
+        parse_component_payload("vacuum", {"cln_segmnts_cmd_t": "vacuum/segments"})
+
+
+@pytest.mark.parametrize(
+    "value,expected",
+    [
+        (True, True),
+        (False, False),
+        (1, True),
+        (0, False),
+        (2, True),
+        (-1, True),
+        (1.5, True),
+        (0.0, False),
+        ("enable", True),
+        ("disable", False),
+        (" ON ", True),
+        ("No", False),
+    ],
+)
+def test_new_boolean_fields_follow_home_assistant(value: object, expected: bool) -> None:
+    sensor = parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": value})
+    assert sensor.model_dump()["visible_by_default"] is expected
+    emitter = parse_infrared_payload({"schema": "emitter", "cmd_t": "infrared/send", "ret": value})
+    assert isinstance(emitter, InfraredEmitter)
+    assert emitter.retain is expected
+
+
+@pytest.mark.parametrize("value", ["maybe", "", "t", "f", "y", "n", None, [], {}])
+def test_new_boolean_fields_reject_invalid_values(value: object) -> None:
+    with pytest.raises(ValidationError):
+        parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": value})
+    with pytest.raises(ValidationError):
+        parse_infrared_payload({"schema": "emitter", "cmd_t": "infrared/send", "ret": value})
+
+
+# Each new publish topic field with the payload it needs to be otherwise valid
+NEW_PUBLISH_TOPIC_FIELDS = [
+    ("date", {}, "cmd_t"),
+    ("datetime", {}, "cmd_t"),
+    ("time", {}, "cmd_t"),
+    ("infrared", {"schema": "emitter"}, "cmd_t"),
+    ("lawn_mower", {}, "stop_cmd_t"),
+    ("vacuum", {"uniq_id": "vacuum-1"}, "cln_segmnts_cmd_t"),
+]
+
+
+@pytest.mark.parametrize("component,payload,key", NEW_PUBLISH_TOPIC_FIELDS)
+@pytest.mark.parametrize("topic", ["a/b", "/", "a//b", "é/ü"])
+def test_new_publish_topics_accepted(component: str, payload: dict[str, object], key: str, topic: str) -> None:
+    parse_component_payload(component, {**payload, key: topic})
+
+
+@pytest.mark.parametrize("component,payload,key", NEW_PUBLISH_TOPIC_FIELDS)
+@pytest.mark.parametrize("topic", ["", "a/+/b", "a/#", "#", "a\x01", "a\x85", "a\ufdd0", "a\0", "\ud800", "x" * 65536])
+def test_new_publish_topics_rejected(component: str, payload: dict[str, object], key: str, topic: str) -> None:
+    with pytest.raises(ValidationError):
+        parse_component_payload(component, {**payload, key: topic})
+
+
+@pytest.mark.parametrize("topic", ["a/b", "#", "+", "a/#", "/#", "+/a/+", "a/+/b"])
+def test_infrared_receiver_subscribe_topic_accepted(topic: str) -> None:
+    parse_infrared_payload({"schema": "receiver", "stat_t": topic})
+
+
+@pytest.mark.parametrize("topic", ["", "a/#/b", "a#", "#/a", "a+/b", "a/b+", "a\x01"])
+def test_infrared_receiver_subscribe_topic_rejected(topic: str) -> None:
+    with pytest.raises(ValidationError):
+        parse_infrared_payload({"schema": "receiver", "stat_t": topic})
+
+
+@pytest.mark.parametrize(
+    "component,payload,key",
+    [
+        ("date", {"cmd_t": "date/set"}, "cmd_tpl"),
+        ("datetime", {"cmd_t": "datetime/set"}, "tz"),
+        ("time", {"cmd_t": "time/set"}, "val_tpl"),
+        ("infrared", {"schema": "emitter", "cmd_t": "infrared/send"}, "cmd_tpl"),
+        ("infrared", {"schema": "receiver", "stat_t": "infrared/received"}, "val_tpl"),
+        ("lawn_mower", {}, "stop_cmd_t"),
+        ("lawn_mower", {}, "stop_cmd_tpl"),
+        ("vacuum", {"uniq_id": "vacuum-1"}, "cln_segmnts_cmd_t"),
+        ("vacuum", {}, "cln_segmnts_cmd_tpl"),
+    ],
+)
+def test_new_optional_fields_reject_explicit_null(component: str, payload: dict[str, object], key: str) -> None:
+    parse_component_payload(component, payload)
+    with pytest.raises(ValidationError):
+        parse_component_payload(component, {**payload, key: None})

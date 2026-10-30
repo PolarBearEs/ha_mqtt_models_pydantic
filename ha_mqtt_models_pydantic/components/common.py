@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from datetime import timedelta
 from enum import StrEnum
 from typing import Annotated, Any
 
 from pydantic import (
     AnyUrl,
     BaseModel,
+    BeforeValidator,
     ConfigDict,
     Field,
     UrlConstraints,
@@ -36,6 +38,7 @@ from ..const import (
     CONF_JSON_ATTRS_TEMPLATE,
     CONF_JSON_ATTRS_TOPIC,
     CONF_MANUFACTURER,
+    CONF_MESSAGE_EXPIRY_INTERVAL,
     CONF_MODEL,
     CONF_MODEL_ID,
     CONF_NAME,
@@ -53,6 +56,7 @@ from ..const import (
     CONF_UNIQUE_ID,
     CONF_VALUE_TEMPLATE,
     CONF_VIA_DEVICE,
+    CONF_VISIBLE_BY_DEFAULT,
     DEFAULT_ENCODING,
     DEFAULT_PAYLOAD_AVAILABLE,
     DEFAULT_PAYLOAD_NOT_AVAILABLE,
@@ -61,6 +65,72 @@ from ..const import (
 from ._coercion import coerce_string_like_fields
 
 PreservedUrl = Annotated[AnyUrl, UrlConstraints(preserve_empty_path=True)]
+
+TIME_PERIOD_KEYS = ("days", "hours", "minutes", "seconds", "milliseconds")
+
+
+HA_TRUE_STRINGS = ("1", "true", "yes", "on", "enable")
+HA_FALSE_STRINGS = ("0", "false", "no", "off", "disable")
+
+
+def validate_ha_boolean(value: Any) -> Any:
+    """Coerce a boolean the way Home Assistant's cv.boolean does."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        normalized = value.lower().strip()
+        if normalized in HA_TRUE_STRINGS:
+            return True
+        if normalized in HA_FALSE_STRINGS:
+            return False
+    elif isinstance(value, int | float):
+        return value != 0
+    # Raise instead of falling back to Pydantic, which also accepts strings like "t" and "y"
+    raise ValueError(f"invalid boolean value {value!r}")
+
+
+HaBool = Annotated[bool, BeforeValidator(validate_ha_boolean)]
+
+
+def reject_explicit_null(value: Any) -> Any:
+    """Reject null when the key is present; omitting the key still uses the default."""
+    if value is None:
+        raise ValueError("value must not be null")
+    return value
+
+
+# Home Assistant accepts these fields when omitted but rejects an explicit null
+NotNull = BeforeValidator(reject_explicit_null)
+
+
+def validate_time_period_seconds(value: Any) -> Any:
+    """Convert a Home Assistant time period dict to whole seconds."""
+    if isinstance(value, bool):
+        # Home Assistant coerces integers, and bool is an int
+        return int(value)
+    if not isinstance(value, dict):
+        return value
+    if unknown := sorted(set(value) - set(TIME_PERIOD_KEYS)):
+        raise ValueError(f"unknown time period keys: {', '.join(unknown)}")
+    if not value:
+        raise ValueError(f"time period must use at least one of the keys {', '.join(TIME_PERIOD_KEYS)}")
+    try:
+        period = timedelta(**{key: float(item) for key, item in value.items()})
+    except (TypeError, ValueError) as err:
+        raise ValueError("time period values must be numbers") from err
+    except OverflowError as err:
+        raise ValueError("time period is out of range") from err
+    if period < timedelta(0):
+        raise ValueError("time period must not be negative")
+    return int(period.total_seconds())
+
+
+MessageExpiryInterval = Annotated[
+    Annotated[int, Field(ge=0, strict=True)] | None,
+    BeforeValidator(validate_time_period_seconds),
+    NotNull,
+    Field(alias=CONF_MESSAGE_EXPIRY_INTERVAL),
+]
 
 
 class MqttModel(BaseModel):
@@ -206,7 +276,9 @@ class MqttEntityCommon(AvailabilityBase):
     json_attributes_topic: Annotated[str | None, Field(alias=CONF_JSON_ATTRS_TOPIC, min_length=1)] = None
     json_attributes_template: Annotated[str | None, Field(alias=CONF_JSON_ATTRS_TEMPLATE)] = None
     default_entity_id: Annotated[str | None, Field(alias=CONF_DEFAULT_ENTITY_ID)] = None
+    message_expiry_interval: MessageExpiryInterval = None
     unique_id: Annotated[str | None, Field(alias=CONF_UNIQUE_ID)] = None
+    visible_by_default: Annotated[HaBool, Field(alias=CONF_VISIBLE_BY_DEFAULT)] = True
 
 
 class DeviceDiscoveryComponent(MqttModel):
@@ -220,5 +292,6 @@ class DeviceDiscoveryPayload(MqttBase, AvailabilityBase):
     device: Annotated[DeviceInfo, Field(alias=CONF_DEVICE)]
     components: Annotated[dict[str, DeviceDiscoveryComponent], Field(alias=CONF_COMPONENTS)]
     origin: Annotated[OriginInfo, Field(alias=CONF_ORIGIN)]
+    message_expiry_interval: MessageExpiryInterval = None
     state_topic: Annotated[str | None, Field(alias=CONF_STATE_TOPIC, min_length=1)] = None
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None

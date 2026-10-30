@@ -12,12 +12,15 @@ from .components.camera import Camera
 from .components.climate import Climate
 from .components.common import DeviceDiscoveryPayload
 from .components.cover import Cover
+from .components.date import Date
+from .components.datetime import DateTime
 from .components.device_automation import DeviceAutomation
 from .components.device_tracker import DeviceTracker
 from .components.event import Event
 from .components.fan import Fan
 from .components.humidifier import Humidifier
 from .components.image import Image
+from .components.infrared import InfraredEmitter, InfraredReceiver
 from .components.lawn_mower import LawnMower
 from .components.light import LightBasic, LightJson, LightTemplate
 from .components.lock import Lock
@@ -30,6 +33,7 @@ from .components.siren import Siren
 from .components.switch import Switch
 from .components.tag import Tag
 from .components.text import Text
+from .components.time import Time
 from .components.update import Update
 from .components.vacuum import Vacuum
 from .components.valve import Valve
@@ -72,12 +76,16 @@ COMPONENT_MODELS = {
     "camera": Camera,
     "climate": Climate,
     "cover": Cover,
+    "date": Date,
+    "datetime": DateTime,
     "device_automation": DeviceAutomation,
     "device_tracker": DeviceTracker,
     "event": Event,
     "fan": Fan,
     "humidifier": Humidifier,
     "image": Image,
+    # Infrared payloads are dispatched on their required schema by parse_infrared_payload
+    "infrared": InfraredEmitter,
     "lawn_mower": LawnMower,
     "light": LightBasic,
     "lock": Lock,
@@ -90,6 +98,7 @@ COMPONENT_MODELS = {
     "switch": Switch,
     "tag": Tag,
     "text": Text,
+    "time": Time,
     "update": Update,
     "vacuum": Vacuum,
     "valve": Valve,
@@ -113,9 +122,25 @@ def parse_light_payload(
     raise ValueError(f"unsupported light schema: {schema}")
 
 
+def parse_infrared_payload(
+    payload: dict[str, Any],
+    *,
+    expand_aliases: bool = True,
+) -> InfraredEmitter | InfraredReceiver:
+    parsed = expand_abbreviations(payload) if expand_aliases else payload
+    schema = parsed.get(CONF_SCHEMA)
+    if schema == "emitter":
+        return InfraredEmitter.model_validate(parsed)
+    if schema == "receiver":
+        return InfraredReceiver.model_validate(parsed)
+    raise ValueError(f"unsupported infrared schema: {schema}")
+
+
 def parse_component_payload(component: str, payload: dict[str, Any], *, expand_aliases: bool = True) -> BaseModel:
     if component == "light":
         return parse_light_payload(payload, expand_aliases=expand_aliases)
+    if component == "infrared":
+        return parse_infrared_payload(payload, expand_aliases=expand_aliases)
     parsed = expand_abbreviations(payload) if expand_aliases else payload
     try:
         model = COMPONENT_MODELS[component]

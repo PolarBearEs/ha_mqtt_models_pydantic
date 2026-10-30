@@ -10,6 +10,7 @@ This library validates Home Assistant MQTT discovery payloads as plain Python da
 - Helpers to parse raw discovery payloads into the right model
 - Support for Home Assistant discovery abbreviations such as `stat_t`, `cmd_t`, and `dev`
 - Dedicated light parsing for `basic`, `json`, and `template` schemas
+- Dedicated infrared parsing for `emitter` and `receiver` schemas
 - Typed shared models for entity metadata, device info, and origin info
 
 ## Installation
@@ -87,6 +88,22 @@ light = parse_light_payload(
 )
 ```
 
+### Parse an infrared payload
+
+```python
+from ha_mqtt_models_pydantic import parse_infrared_payload
+
+emitter = parse_infrared_payload(
+    {
+        "schema": "emitter",
+        "cmd_t": "devices/ir_blaster/send",
+        "name": "IR Blaster",
+    }
+)
+```
+
+Infrared payloads have no default schema, so `schema` must be `emitter` or `receiver`.
+
 ### Parse a device discovery payload
 
 ```python
@@ -116,12 +133,15 @@ device_payload = parse_device_discovery_payload(
 - `camera`
 - `climate`
 - `cover`
+- `date`
+- `datetime`
 - `device_automation`
 - `device_tracker`
 - `event`
 - `fan`
 - `humidifier`
 - `image`
+- `infrared`
 - `lawn_mower`
 - `light`
 - `lock`
@@ -134,6 +154,7 @@ device_payload = parse_device_discovery_payload(
 - `switch`
 - `tag`
 - `text`
+- `time`
 - `update`
 - `vacuum`
 - `valve`
@@ -145,6 +166,7 @@ device_payload = parse_device_discovery_payload(
 - The PyPI distribution name is `ha-mqtt-models-pydantic`.
 - The library targets Python `3.11+`.
 - The package is marked as typed with `py.typed`.
+- The models match the MQTT discovery schemas of Home Assistant core `2026.10.4` (`master`), exposed as `HA_CORE_VERSION`.
 
 ## Development
 
