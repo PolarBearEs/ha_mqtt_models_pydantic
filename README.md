@@ -54,6 +54,8 @@ print(sensor.device.identifiers)
 
 `parse_component_payload()` expands Home Assistant abbreviations before validation, so both abbreviated and expanded payloads are accepted.
 
+When the component name is a string literal, type checkers infer the concrete model: `parse_component_payload("sensor", ...)` is typed as `Sensor`. `light` and `infrared` return a union of their schema models, and a non-literal `str` returns the `ComponentModel` union.
+
 ## Main APIs
 
 ### Parse a component payload
