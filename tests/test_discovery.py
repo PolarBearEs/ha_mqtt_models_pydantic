@@ -544,6 +544,7 @@ def test_message_expiry_interval_parses(value: object, expected: int) -> None:
         {"seconds": 1e100},
         {"seconds": float("inf")},
         {"seconds": float("nan")},
+        None,
     ],
 )
 def test_message_expiry_interval_rejected(value: object) -> None:
@@ -561,6 +562,15 @@ def test_device_discovery_message_expiry_interval() -> None:
         }
     )
     assert parsed.message_expiry_interval == 3600
+    with pytest.raises(ValidationError):
+        parse_device_discovery_payload(
+            {
+                "dev": {"ids": ["device-1"]},
+                "o": {"name": "bridge"},
+                "cmps": {"temperature": {"p": "sensor", "uniq_id": "temperature-1", "stat_t": "device/temperature"}},
+                "msg_exp_int": None,
+            }
+        )
 
 
 def test_lawn_mower_stop_command() -> None:
@@ -608,3 +618,58 @@ def test_new_boolean_fields_reject_invalid_values(value: object) -> None:
         parse_component_payload("sensor", {"stat_t": "sensor/state", "vis": value})
     with pytest.raises(ValidationError):
         parse_infrared_payload({"schema": "emitter", "cmd_t": "infrared/send", "ret": value})
+
+
+# Each new publish topic field with the payload it needs to be otherwise valid
+NEW_PUBLISH_TOPIC_FIELDS = [
+    ("date", {}, "cmd_t"),
+    ("datetime", {}, "cmd_t"),
+    ("time", {}, "cmd_t"),
+    ("infrared", {"schema": "emitter"}, "cmd_t"),
+    ("lawn_mower", {}, "stop_cmd_t"),
+    ("vacuum", {"uniq_id": "vacuum-1"}, "cln_segmnts_cmd_t"),
+]
+
+
+@pytest.mark.parametrize("component,payload,key", NEW_PUBLISH_TOPIC_FIELDS)
+@pytest.mark.parametrize("topic", ["a/b", "/", "a//b", "é/ü"])
+def test_new_publish_topics_accepted(component: str, payload: dict[str, object], key: str, topic: str) -> None:
+    parse_component_payload(component, {**payload, key: topic})
+
+
+@pytest.mark.parametrize("component,payload,key", NEW_PUBLISH_TOPIC_FIELDS)
+@pytest.mark.parametrize("topic", ["", "a/+/b", "a/#", "#", "a\x01", "a\x85", "a\ufdd0", "a\0", "\ud800", "x" * 65536])
+def test_new_publish_topics_rejected(component: str, payload: dict[str, object], key: str, topic: str) -> None:
+    with pytest.raises(ValidationError):
+        parse_component_payload(component, {**payload, key: topic})
+
+
+@pytest.mark.parametrize("topic", ["a/b", "#", "+", "a/#", "/#", "+/a/+", "a/+/b"])
+def test_infrared_receiver_subscribe_topic_accepted(topic: str) -> None:
+    parse_infrared_payload({"schema": "receiver", "stat_t": topic})
+
+
+@pytest.mark.parametrize("topic", ["", "a/#/b", "a#", "#/a", "a+/b", "a/b+", "a\x01"])
+def test_infrared_receiver_subscribe_topic_rejected(topic: str) -> None:
+    with pytest.raises(ValidationError):
+        parse_infrared_payload({"schema": "receiver", "stat_t": topic})
+
+
+@pytest.mark.parametrize(
+    "component,payload,key",
+    [
+        ("date", {"cmd_t": "date/set"}, "cmd_tpl"),
+        ("datetime", {"cmd_t": "datetime/set"}, "tz"),
+        ("time", {"cmd_t": "time/set"}, "val_tpl"),
+        ("infrared", {"schema": "emitter", "cmd_t": "infrared/send"}, "cmd_tpl"),
+        ("infrared", {"schema": "receiver", "stat_t": "infrared/received"}, "val_tpl"),
+        ("lawn_mower", {}, "stop_cmd_t"),
+        ("lawn_mower", {}, "stop_cmd_tpl"),
+        ("vacuum", {"uniq_id": "vacuum-1"}, "cln_segmnts_cmd_t"),
+        ("vacuum", {}, "cln_segmnts_cmd_tpl"),
+    ],
+)
+def test_new_optional_fields_reject_explicit_null(component: str, payload: dict[str, object], key: str) -> None:
+    parse_component_payload(component, payload)
+    with pytest.raises(ValidationError):
+        parse_component_payload(component, {**payload, key: None})

@@ -24,14 +24,17 @@ from ..const import (
     CONF_STATE_TOPIC,
     CONF_SUPPORTED_FEATURES,
 )
-from .common import MqttBase, MqttEntityCommon
+from ._topics import PublishTopic
+from .common import MqttBase, MqttEntityCommon, NotNull
 
 
 class Vacuum(MqttEntityCommon, MqttBase):
     name: Annotated[str | None, Field(alias=CONF_NAME)] = None
-    clean_segments_command_template: Annotated[str | None, Field(alias=CONF_CLEAN_SEGMENTS_COMMAND_TEMPLATE)] = None
+    clean_segments_command_template: Annotated[
+        str | None, NotNull, Field(alias=CONF_CLEAN_SEGMENTS_COMMAND_TEMPLATE)
+    ] = None
     clean_segments_command_topic: Annotated[
-        str | None, Field(alias=CONF_CLEAN_SEGMENTS_COMMAND_TOPIC, min_length=1)
+        PublishTopic | None, NotNull, Field(alias=CONF_CLEAN_SEGMENTS_COMMAND_TOPIC)
     ] = None
     command_topic: Annotated[str | None, Field(alias=CONF_COMMAND_TOPIC, min_length=1)] = None
     fan_speed_list: Annotated[list[str] | None, Field(alias=CONF_FAN_SPEED_LIST)] = []

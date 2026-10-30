@@ -92,6 +92,17 @@ def validate_ha_boolean(value: Any) -> Any:
 HaBool = Annotated[bool, BeforeValidator(validate_ha_boolean)]
 
 
+def reject_explicit_null(value: Any) -> Any:
+    """Reject null when the key is present; omitting the key still uses the default."""
+    if value is None:
+        raise ValueError("value must not be null")
+    return value
+
+
+# Home Assistant accepts these fields when omitted but rejects an explicit null
+NotNull = BeforeValidator(reject_explicit_null)
+
+
 def validate_time_period_seconds(value: Any) -> Any:
     """Convert a Home Assistant time period dict to whole seconds."""
     if isinstance(value, bool):
@@ -117,6 +128,7 @@ def validate_time_period_seconds(value: Any) -> Any:
 MessageExpiryInterval = Annotated[
     Annotated[int, Field(ge=0, strict=True)] | None,
     BeforeValidator(validate_time_period_seconds),
+    NotNull,
     Field(alias=CONF_MESSAGE_EXPIRY_INTERVAL),
 ]
 

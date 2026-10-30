@@ -21,7 +21,8 @@ from ..const import (
     DEFAULT_OPTIMISTIC,
     DEFAULT_RETAIN,
 )
-from .common import MqttBase, MqttEntityCommon
+from ._topics import PublishTopic
+from .common import MqttBase, MqttEntityCommon, NotNull
 
 
 class LawnMower(MqttEntityCommon, MqttBase):
@@ -36,5 +37,5 @@ class LawnMower(MqttEntityCommon, MqttBase):
     retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
     start_mowing_command_template: Annotated[str | None, Field(alias=CONF_START_MOWING_COMMAND_TEMPLATE)] = None
     start_mowing_command_topic: Annotated[str | None, Field(alias=CONF_START_MOWING_COMMAND_TOPIC, min_length=1)] = None
-    stop_command_template: Annotated[str | None, Field(alias=CONF_STOP_COMMAND_TEMPLATE)] = None
-    stop_command_topic: Annotated[str | None, Field(alias=CONF_STOP_COMMAND_TOPIC, min_length=1)] = None
+    stop_command_template: Annotated[str | None, NotNull, Field(alias=CONF_STOP_COMMAND_TEMPLATE)] = None
+    stop_command_topic: Annotated[PublishTopic | None, NotNull, Field(alias=CONF_STOP_COMMAND_TOPIC)] = None
