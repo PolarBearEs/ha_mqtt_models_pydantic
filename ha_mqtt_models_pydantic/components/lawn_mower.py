@@ -16,6 +16,8 @@ from ..const import (
     CONF_RETAIN,
     CONF_START_MOWING_COMMAND_TEMPLATE,
     CONF_START_MOWING_COMMAND_TOPIC,
+    CONF_STOP_COMMAND_TEMPLATE,
+    CONF_STOP_COMMAND_TOPIC,
     DEFAULT_OPTIMISTIC,
     DEFAULT_RETAIN,
 )
@@ -34,3 +36,5 @@ class LawnMower(MqttEntityCommon, MqttBase):
     retain: Annotated[bool, Field(alias=CONF_RETAIN)] = DEFAULT_RETAIN
     start_mowing_command_template: Annotated[str | None, Field(alias=CONF_START_MOWING_COMMAND_TEMPLATE)] = None
     start_mowing_command_topic: Annotated[str | None, Field(alias=CONF_START_MOWING_COMMAND_TOPIC, min_length=1)] = None
+    stop_command_template: Annotated[str | None, Field(alias=CONF_STOP_COMMAND_TEMPLATE)] = None
+    stop_command_topic: Annotated[str | None, Field(alias=CONF_STOP_COMMAND_TOPIC, min_length=1)] = None
