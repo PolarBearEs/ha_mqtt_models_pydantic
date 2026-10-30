@@ -81,6 +81,8 @@ def validate_time_period_seconds(value: Any) -> Any:
         period = timedelta(**{key: float(item) for key, item in value.items()})
     except (TypeError, ValueError) as err:
         raise ValueError("time period values must be numbers") from err
+    except OverflowError as err:
+        raise ValueError("time period is out of range") from err
     if period < timedelta(0):
         raise ValueError("time period must not be negative")
     return int(period.total_seconds())

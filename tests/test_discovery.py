@@ -523,7 +523,22 @@ def test_message_expiry_interval_parses(value: object, expected: int) -> None:
     assert parsed.model_dump()["message_expiry_interval"] == expected
 
 
-@pytest.mark.parametrize("value", [-1, "30", 1.5, True, {}, {"weeks": 1}, {"seconds": -5}, {"seconds": "x"}])
+@pytest.mark.parametrize(
+    "value",
+    [
+        -1,
+        "30",
+        1.5,
+        True,
+        {},
+        {"weeks": 1},
+        {"seconds": -5},
+        {"seconds": "x"},
+        {"seconds": 1e100},
+        {"seconds": float("inf")},
+        {"seconds": float("nan")},
+    ],
+)
 def test_message_expiry_interval_rejected(value: object) -> None:
     with pytest.raises(ValidationError):
         parse_component_payload("switch", {"cmd_t": "switch/cmd", "msg_exp_int": value})
