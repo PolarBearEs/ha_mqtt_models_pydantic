@@ -56,6 +56,8 @@ print(sensor.device.identifiers)
 
 When the component name is a string literal, type checkers infer the concrete model: `parse_component_payload("sensor", ...)` is typed as `Sensor`. `light` and `infrared` return a union of their schema models, and a non-literal `str` returns the `ComponentModel` union.
 
+Annotate a variable with `ComponentName` to keep the literal typing when the name is not hard-coded. `EntityModel` is the `ComponentModel` union without `device_automation` and `tag`, so every member is a `MqttEntityCommon` with `device`, `unique_id` and the availability fields.
+
 ## Main APIs
 
 ### Parse a component payload
