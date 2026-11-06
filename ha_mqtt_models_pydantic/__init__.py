@@ -1,4 +1,4 @@
-from ._typing import ComponentModel
+from ._typing import ComponentModel, ComponentName, EntityModel, Payload
 from .components import (
     AlarmControlPanel,
     BinarySensor,
@@ -36,7 +36,18 @@ from .components import (
     Valve,
     WaterHeater,
 )
-from .components.common import DeviceInfo, MqttEntityCommon, OriginInfo
+from .components.common import (
+    AvailabilityBase,
+    AvailabilityConfig,
+    DeviceDiscoveryPayload,
+    DeviceInfo,
+    MqttBase,
+    MqttEntityCommon,
+    MqttModel,
+    MqttReadOnly,
+    MqttReadWrite,
+    OriginInfo,
+)
 from .const import HA_CORE_VERSION
 from .discovery import (
     COMPONENT_MODELS,
@@ -51,18 +62,23 @@ __all__ = [
     "COMPONENT_MODELS",
     "HA_CORE_VERSION",
     "AlarmControlPanel",
+    "AvailabilityBase",
+    "AvailabilityConfig",
     "BinarySensor",
     "Button",
     "Camera",
     "Climate",
     "ComponentModel",
+    "ComponentName",
     "Cover",
     "Date",
     "DateTime",
     "DeviceAutomation",
+    "DeviceDiscoveryPayload",
     "DeviceInfo",
     "DeviceTracker",
     "DiscoveryPayload",
+    "EntityModel",
     "Event",
     "Fan",
     "Humidifier",
@@ -74,10 +90,15 @@ __all__ = [
     "LightJson",
     "LightTemplate",
     "Lock",
+    "MqttBase",
     "MqttEntityCommon",
+    "MqttModel",
+    "MqttReadOnly",
+    "MqttReadWrite",
     "Notify",
     "Number",
     "OriginInfo",
+    "Payload",
     "Scene",
     "Select",
     "Sensor",
